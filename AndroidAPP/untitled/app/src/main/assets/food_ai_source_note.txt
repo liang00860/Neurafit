@@ -1,0 +1,2 @@
+Food.AI model assets were sourced from https://github.com/jonathanyin12/Food.AI.
+The repository did not include a standalone LICENSE file during integration; confirm usage rights before production release.

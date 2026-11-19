@@ -1,0 +1,10 @@
+rice
+chicken_breast
+egg
+banana
+apple
+dumpling
+noodle
+salad
+hamburger
+pizza

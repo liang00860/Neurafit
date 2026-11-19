@@ -1,0 +1,25 @@
+package com.neurafit.app.nutrition
+
+data class NutritionScanRecord(
+    val scanId: String,
+    val imageUri: String,
+    val foodName: String,
+    val foodLabel: String,
+    val confidence: Float,
+    val confidenceLabel: String,
+    val servingGrams: Int,
+    val weightLabel: String,
+    val caloriesKcal: Int,
+    val caloriesLabel: String,
+    val proteinGrams: Float,
+    val proteinLabel: String,
+    val dietaryFiberGrams: Float,
+    val dietaryFiberLabel: String,
+    val carbsGrams: Float,
+    val carbsLabel: String,
+    val fatGrams: Float,
+    val fatLabel: String,
+    val analysisSummary: String,
+    val dataSource: String,
+    val itemSummary: String,
+)

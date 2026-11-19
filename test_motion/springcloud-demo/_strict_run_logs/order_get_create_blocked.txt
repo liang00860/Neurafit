@@ -1,0 +1,2 @@
+﻿{"timestamp":"2026-06-15T04:01:57.705+00:00","path":"/api/order/create","status":404,"error":"Not Found","message":null,"requestId":"23dc280e-5"}
+HTTP_STATUS:404

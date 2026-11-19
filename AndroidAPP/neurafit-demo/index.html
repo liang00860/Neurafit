@@ -1,0 +1,1690 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #07091f;
+        color: #f3f7ff;
+        font-family: "Noto Sans JP", sans-serif;
+        letter-spacing: 0;
+      }
+
+      body {
+        font-variant-numeric: tabular-nums;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 18% 22%, rgba(37, 215, 255, 0.3), rgba(37, 215, 255, 0) 30%),
+          radial-gradient(circle at 82% 16%, rgba(138, 92, 255, 0.38), rgba(138, 92, 255, 0) 32%),
+          radial-gradient(circle at 70% 82%, rgba(65, 242, 161, 0.16), rgba(65, 242, 161, 0) 26%),
+          linear-gradient(135deg, #07091f 0%, #12103a 48%, #1b103f 100%);
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 14% 20%, rgba(37, 215, 255, 0.22), rgba(37, 215, 255, 0) 30%),
+          radial-gradient(circle at 84% 22%, rgba(138, 92, 255, 0.32), rgba(138, 92, 255, 0) 34%),
+          radial-gradient(circle at 74% 84%, rgba(65, 242, 161, 0.13), rgba(65, 242, 161, 0) 28%),
+          linear-gradient(135deg, #07091f 0%, #11133a 52%, #1b103f 100%);
+      }
+
+      #scene1 {
+        z-index: 2;
+        opacity: 1;
+      }
+
+      #scene2,
+      #scene3,
+      #scene4,
+      #scene5,
+      #scene6 {
+        z-index: 1;
+        opacity: 0;
+      }
+
+      .scene-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 72px 96px;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .bg-grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.28;
+        background-image:
+          linear-gradient(rgba(37, 215, 255, 0.18) 1px, rgba(37, 215, 255, 0) 1px),
+          linear-gradient(90deg, rgba(138, 92, 255, 0.16) 1px, rgba(138, 92, 255, 0) 1px);
+        background-size: 72px 72px;
+        mask-image: radial-gradient(circle at center, #000 18%, rgba(0, 0, 0, 0) 78%);
+      }
+
+      .glow {
+        position: absolute;
+        width: 520px;
+        height: 520px;
+        border-radius: 50%;
+        filter: blur(72px);
+        opacity: 0.45;
+        pointer-events: none;
+      }
+
+      .glow.a {
+        left: -170px;
+        top: 60px;
+        background: rgba(37, 215, 255, 0.42);
+      }
+
+      .glow.b {
+        right: -180px;
+        top: -90px;
+        background: rgba(138, 92, 255, 0.48);
+      }
+
+      .glow.c {
+        right: 200px;
+        bottom: -220px;
+        background: rgba(65, 242, 161, 0.2);
+      }
+
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        width: max-content;
+        min-height: 38px;
+        padding: 0 14px;
+        border: 1px solid rgba(37, 215, 255, 0.44);
+        border-radius: 8px;
+        background: rgba(9, 20, 52, 0.54);
+        color: #9eeaff;
+        font-size: 22px;
+        font-weight: 700;
+        box-shadow: 0 0 22px rgba(37, 215, 255, 0.16);
+      }
+
+      .scene-title {
+        color: #f3f7ff;
+        font-size: 58px;
+        line-height: 1.12;
+        font-weight: 900;
+        text-shadow: 0 0 26px rgba(37, 215, 255, 0.22);
+      }
+
+      .scene-subtitle,
+      .body-copy {
+        color: #afc4ea;
+        font-size: 26px;
+        line-height: 1.45;
+        font-weight: 350;
+      }
+
+      .glass {
+        border: 1px solid rgba(175, 196, 234, 0.28);
+        border-radius: 8px;
+        background: linear-gradient(145deg, rgba(14, 28, 70, 0.68), rgba(34, 22, 83, 0.52));
+        box-shadow:
+          inset 0 1px 0 rgba(243, 247, 255, 0.16),
+          0 18px 70px rgba(0, 0, 0, 0.28),
+          0 0 38px rgba(37, 215, 255, 0.08);
+        backdrop-filter: blur(22px);
+      }
+
+      .phone {
+        width: 360px;
+        height: 720px;
+        padding: 18px;
+        border-radius: 48px;
+        background:
+          linear-gradient(145deg, rgba(225, 236, 255, 0.16), rgba(64, 86, 160, 0.1)),
+          #0b1028;
+        border: 2px solid rgba(243, 247, 255, 0.22);
+        box-shadow:
+          0 36px 90px rgba(0, 0, 0, 0.46),
+          0 0 55px rgba(37, 215, 255, 0.18);
+      }
+
+      .phone-screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 34px;
+        background:
+          radial-gradient(circle at 52% 18%, rgba(37, 215, 255, 0.32), rgba(37, 215, 255, 0) 28%),
+          linear-gradient(180deg, #101638, #080b22 72%);
+        border: 1px solid rgba(175, 196, 234, 0.22);
+      }
+
+      .phone-notch {
+        position: absolute;
+        left: 50%;
+        top: 14px;
+        width: 96px;
+        height: 20px;
+        transform: translateX(-50%);
+        border-radius: 20px;
+        background: rgba(3, 7, 22, 0.82);
+      }
+
+      .app-title {
+        position: absolute;
+        top: 56px;
+        left: 24px;
+        right: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #f3f7ff;
+        font-weight: 900;
+        font-size: 24px;
+      }
+
+      .app-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #41f2a1;
+        box-shadow: 0 0 18px rgba(65, 242, 161, 0.9);
+      }
+
+      .phone-card {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        border-radius: 8px;
+        border: 1px solid rgba(175, 196, 234, 0.22);
+        background: rgba(12, 24, 58, 0.68);
+        box-shadow: inset 0 1px 0 rgba(243, 247, 255, 0.1);
+      }
+
+      .phone-card.large {
+        top: 108px;
+        height: 330px;
+      }
+
+      .phone-card.medium {
+        top: 462px;
+        height: 86px;
+        padding: 16px;
+      }
+
+      .phone-card.small {
+        top: 568px;
+        height: 84px;
+        padding: 16px;
+      }
+
+      .mini-label {
+        color: #afc4ea;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .mini-value {
+        margin-top: 5px;
+        color: #25d7ff;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 26px;
+        font-weight: 800;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 8px;
+        margin-top: 14px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(175, 196, 234, 0.14);
+      }
+
+      .progress-fill {
+        width: 78%;
+        height: 100%;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #25d7ff, #41f2a1);
+        box-shadow: 0 0 18px rgba(37, 215, 255, 0.55);
+        transform-origin: left center;
+      }
+
+      .skeleton-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        filter: drop-shadow(0 0 10px rgba(37, 215, 255, 0.9));
+      }
+
+      .bone {
+        stroke: #25d7ff;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .bone-soft {
+        stroke: rgba(55, 119, 255, 0.54);
+        stroke-width: 18;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        fill: none;
+      }
+
+      .joint {
+        fill: #25d7ff;
+        stroke: rgba(243, 247, 255, 0.78);
+        stroke-width: 3;
+      }
+
+      .joint-small {
+        fill: #3777ff;
+        stroke: rgba(243, 247, 255, 0.68);
+        stroke-width: 2;
+      }
+
+      .error-bone {
+        stroke: #ff3b5e;
+        stroke-width: 14;
+        stroke-linecap: round;
+        fill: none;
+        filter: drop-shadow(0 0 16px rgba(255, 59, 94, 0.94));
+      }
+
+      .error-joint {
+        fill: #ff3b5e;
+        stroke: #ffd2db;
+        stroke-width: 4;
+        filter: drop-shadow(0 0 12px rgba(255, 59, 94, 0.9));
+      }
+
+      .intro-grid {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        align-items: center;
+        gap: 70px;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 26px;
+        min-width: 0;
+      }
+
+      .brand-title {
+        font-size: 118px;
+        line-height: 1;
+        font-weight: 900;
+        color: #f3f7ff;
+        text-shadow:
+          0 0 22px rgba(37, 215, 255, 0.42),
+          0 0 74px rgba(138, 92, 255, 0.42);
+      }
+
+      .brand-subtitle {
+        color: #d6e3ff;
+        font-size: 38px;
+        font-weight: 700;
+      }
+
+      .core-chips {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+
+      .chip {
+        min-height: 44px;
+        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 8px;
+        color: #cdeeff;
+        border: 1px solid rgba(37, 215, 255, 0.34);
+        background: rgba(9, 24, 58, 0.58);
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .hero-visual {
+        position: relative;
+        height: 840px;
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        align-items: center;
+        gap: 26px;
+      }
+
+      .hero-visual .phone {
+        transform: rotate(-5deg);
+      }
+
+      .standing-skeleton-wrap {
+        height: 760px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .status-ring {
+        position: absolute;
+        right: 62px;
+        top: 116px;
+        width: 390px;
+        height: 390px;
+        border-radius: 50%;
+        border: 1px solid rgba(37, 215, 255, 0.28);
+        box-shadow:
+          inset 0 0 40px rgba(37, 215, 255, 0.08),
+          0 0 44px rgba(138, 92, 255, 0.16);
+      }
+
+      .status-ring::after {
+        content: "";
+        position: absolute;
+        inset: 42px;
+        border-radius: 50%;
+        border: 1px dashed rgba(65, 242, 161, 0.32);
+      }
+
+      .s2-grid {
+        display: grid;
+        grid-template-columns: 520px 1fr 440px;
+        gap: 42px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .camera-column {
+        position: relative;
+        height: 820px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .camera-column .phone {
+        width: 340px;
+        height: 680px;
+      }
+
+      .camera-rays {
+        position: absolute;
+        right: -82px;
+        top: 222px;
+        width: 220px;
+        height: 260px;
+        opacity: 0.85;
+      }
+
+      .ray {
+        position: absolute;
+        left: 0;
+        width: 220px;
+        height: 2px;
+        transform-origin: left center;
+        background: linear-gradient(90deg, rgba(37, 215, 255, 0.9), rgba(37, 215, 255, 0));
+        box-shadow: 0 0 18px rgba(37, 215, 255, 0.6);
+      }
+
+      .ray:nth-child(1) {
+        top: 38px;
+        transform: rotate(-22deg);
+      }
+
+      .ray:nth-child(2) {
+        top: 130px;
+        transform: rotate(0deg);
+      }
+
+      .ray:nth-child(3) {
+        top: 220px;
+        transform: rotate(22deg);
+      }
+
+      .pose-stage {
+        position: relative;
+        height: 820px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .pose-box {
+        width: 660px;
+        height: 780px;
+        padding: 28px;
+      }
+
+      .right-notes {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .note-card {
+        padding: 22px;
+      }
+
+      .note-card h3 {
+        color: #f3f7ff;
+        font-size: 28px;
+        line-height: 1.2;
+      }
+
+      .note-card p {
+        margin-top: 12px;
+        color: #afc4ea;
+        font-size: 22px;
+        line-height: 1.35;
+      }
+
+      .big-number {
+        margin-top: 14px;
+        color: #25d7ff;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 54px;
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .scene-topbar {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 28px;
+      }
+
+      .scene-topbar .scene-title {
+        max-width: 1120px;
+      }
+
+      .badge-live {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 8px;
+        border: 1px solid rgba(65, 242, 161, 0.42);
+        background: rgba(20, 56, 54, 0.48);
+        color: #b9ffde;
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .pulse-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #41f2a1;
+        box-shadow: 0 0 18px rgba(65, 242, 161, 0.9);
+      }
+
+      .s3-grid {
+        display: grid;
+        grid-template-columns: 680px 1fr;
+        gap: 46px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .analysis-stage {
+        height: 760px;
+        padding: 30px;
+        position: relative;
+      }
+
+      .angle-panel {
+        padding: 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .panel-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #f3f7ff;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .scan-chip {
+        color: #9eeaff;
+        font-size: 18px;
+        font-weight: 800;
+        border: 1px solid rgba(37, 215, 255, 0.3);
+        border-radius: 8px;
+        padding: 7px 10px;
+        background: rgba(37, 215, 255, 0.08);
+      }
+
+      .stat-row {
+        display: grid;
+        grid-template-columns: 210px 120px 1fr;
+        gap: 18px;
+        align-items: center;
+        min-height: 58px;
+      }
+
+      .stat-name {
+        color: #cfe0ff;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .stat-value {
+        color: #f3f7ff;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .stat-value.warning {
+        color: #ff748b;
+      }
+
+      .bar {
+        height: 12px;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(175, 196, 234, 0.14);
+      }
+
+      .bar span {
+        display: block;
+        height: 100%;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #3777ff, #25d7ff);
+        box-shadow: 0 0 18px rgba(37, 215, 255, 0.48);
+        transform-origin: left center;
+      }
+
+      .bar.warning span {
+        background: linear-gradient(90deg, #ff3b5e, #ff9bad);
+        box-shadow: 0 0 20px rgba(255, 59, 94, 0.55);
+      }
+
+      .warning-card {
+        margin-top: 10px;
+        padding: 26px;
+        border-color: rgba(255, 59, 94, 0.44);
+        background: linear-gradient(145deg, rgba(93, 20, 45, 0.62), rgba(24, 20, 58, 0.5));
+      }
+
+      .warning-card .warning-title {
+        color: #ffd2db;
+        font-size: 30px;
+        font-weight: 900;
+      }
+
+      .warning-card .warning-text {
+        margin-top: 12px;
+        color: #f3f7ff;
+        font-size: 36px;
+        line-height: 1.25;
+        font-weight: 800;
+      }
+
+      .voice-wave {
+        margin-top: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+      }
+
+      .voice-wave span {
+        width: 8px;
+        height: 14px;
+        border-radius: 8px;
+        background: #25d7ff;
+        box-shadow: 0 0 12px rgba(37, 215, 255, 0.6);
+        transform-origin: center bottom;
+      }
+
+      .s4-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 360px 1fr;
+        gap: 40px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .data-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .data-card {
+        min-height: 176px;
+        padding: 24px;
+      }
+
+      .data-card .label {
+        color: #afc4ea;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .data-card .value {
+        margin-top: 18px;
+        color: #f3f7ff;
+        font-size: 42px;
+        line-height: 1.08;
+        font-weight: 900;
+      }
+
+      .data-card .sub {
+        margin-top: 12px;
+        color: #9eeaff;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .flow-field {
+        position: relative;
+        height: 520px;
+      }
+
+      .data-packet {
+        position: absolute;
+        left: -10px;
+        width: 116px;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(37, 215, 255, 0.46);
+        color: #d6f7ff;
+        background: rgba(13, 37, 74, 0.72);
+        box-shadow: 0 0 22px rgba(37, 215, 255, 0.22);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      .data-packet:nth-child(1) {
+        top: 90px;
+      }
+
+      .data-packet:nth-child(2) {
+        top: 205px;
+      }
+
+      .data-packet:nth-child(3) {
+        top: 322px;
+      }
+
+      .flow-line {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        height: 2px;
+        background: linear-gradient(90deg, rgba(37, 215, 255, 0), rgba(37, 215, 255, 0.95), rgba(65, 242, 161, 0));
+        box-shadow: 0 0 18px rgba(37, 215, 255, 0.5);
+      }
+
+      .flow-line.one {
+        top: 113px;
+      }
+
+      .flow-line.two {
+        top: 228px;
+      }
+
+      .flow-line.three {
+        top: 345px;
+      }
+
+      .db-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 26px;
+      }
+
+      .database {
+        position: relative;
+        width: 290px;
+        height: 340px;
+      }
+
+      .db-cylinder {
+        position: absolute;
+        inset: 56px 26px 20px;
+        border: 2px solid rgba(37, 215, 255, 0.7);
+        border-top: 0;
+        border-bottom: 0;
+        background: linear-gradient(180deg, rgba(37, 215, 255, 0.16), rgba(138, 92, 255, 0.12));
+        box-shadow:
+          inset 0 0 38px rgba(37, 215, 255, 0.16),
+          0 0 40px rgba(37, 215, 255, 0.2);
+      }
+
+      .db-cylinder::before,
+      .db-cylinder::after {
+        content: "";
+        position: absolute;
+        left: -2px;
+        width: calc(100% + 4px);
+        height: 68px;
+        border-radius: 50%;
+        border: 2px solid rgba(37, 215, 255, 0.7);
+        background: rgba(9, 24, 58, 0.88);
+      }
+
+      .db-cylinder::before {
+        top: -34px;
+      }
+
+      .db-cylinder::after {
+        bottom: -34px;
+      }
+
+      .db-line {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        height: 2px;
+        background: rgba(37, 215, 255, 0.58);
+      }
+
+      .db-line.l1 {
+        top: 150px;
+      }
+
+      .db-line.l2 {
+        top: 224px;
+      }
+
+      .db-label {
+        color: #d6f7ff;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .db-detail {
+        color: #afc4ea;
+        font-size: 22px;
+        text-align: center;
+        line-height: 1.35;
+      }
+
+      .s5-grid {
+        display: grid;
+        grid-template-columns: 520px 1fr;
+        gap: 42px;
+        align-items: stretch;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .profile-card {
+        padding: 34px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .avatar-core {
+        width: 250px;
+        height: 250px;
+        margin: 36px auto 22px;
+        border-radius: 50%;
+        border: 1px solid rgba(37, 215, 255, 0.46);
+        background:
+          radial-gradient(circle at center 34%, rgba(37, 215, 255, 0.44) 0 38px, rgba(37, 215, 255, 0) 39px),
+          radial-gradient(circle at center 75%, rgba(138, 92, 255, 0.34) 0 74px, rgba(138, 92, 255, 0) 75px),
+          rgba(10, 22, 58, 0.72);
+        box-shadow:
+          inset 0 0 50px rgba(37, 215, 255, 0.14),
+          0 0 48px rgba(37, 215, 255, 0.2);
+      }
+
+      .profile-name {
+        color: #f3f7ff;
+        text-align: center;
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .profile-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        margin-top: 18px;
+      }
+
+      .profile-tags span {
+        min-height: 38px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: rgba(37, 215, 255, 0.1);
+        border: 1px solid rgba(37, 215, 255, 0.24);
+        color: #cdeeff;
+        font-size: 18px;
+        font-weight: 700;
+      }
+
+      .dashboard {
+        padding: 28px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .dash-card {
+        min-height: 208px;
+        padding: 24px;
+      }
+
+      .dash-card.wide {
+        grid-column: 1 / -1;
+        min-height: 230px;
+      }
+
+      .dash-label {
+        color: #afc4ea;
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .dash-value {
+        margin-top: 14px;
+        color: #f3f7ff;
+        font-size: 46px;
+        line-height: 1.1;
+        font-weight: 900;
+      }
+
+      .dash-value.good {
+        color: #41f2a1;
+      }
+
+      .trend-svg {
+        width: 100%;
+        height: 118px;
+        margin-top: 18px;
+        overflow: visible;
+      }
+
+      .threshold-change {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 18px;
+        color: #f3f7ff;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 40px;
+        font-weight: 900;
+      }
+
+      .threshold-change .old {
+        color: #afc4ea;
+      }
+
+      .threshold-change .arrow {
+        color: #25d7ff;
+      }
+
+      .threshold-change .new {
+        color: #41f2a1;
+      }
+
+      .s6-grid {
+        display: grid;
+        grid-template-rows: 230px 1fr 150px;
+        gap: 18px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .pipeline {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+        align-items: center;
+      }
+
+      .pipe-step {
+        position: relative;
+        min-height: 118px;
+        padding: 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .pipe-step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        right: -23px;
+        width: 24px;
+        height: 2px;
+        background: #25d7ff;
+        box-shadow: 0 0 14px rgba(37, 215, 255, 0.78);
+      }
+
+      .pipe-step:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        top: calc(50% - 6px);
+        right: -28px;
+        width: 12px;
+        height: 12px;
+        border-right: 2px solid #25d7ff;
+        border-top: 2px solid #25d7ff;
+        transform: rotate(45deg);
+      }
+
+      .pipe-index {
+        color: #9eeaff;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 19px;
+        font-weight: 900;
+      }
+
+      .pipe-title {
+        margin-top: 8px;
+        color: #f3f7ff;
+        font-size: 30px;
+        line-height: 1.15;
+        font-weight: 900;
+      }
+
+      .loop-stage {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+      }
+
+      .loop-orbit {
+        position: relative;
+        width: 670px;
+        height: 470px;
+      }
+
+      .orbit-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+        filter: drop-shadow(0 0 18px rgba(37, 215, 255, 0.42));
+      }
+
+      .loop-label {
+        position: absolute;
+        width: 132px;
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        border: 1px solid rgba(37, 215, 255, 0.4);
+        background: rgba(10, 24, 58, 0.72);
+        color: #f3f7ff;
+        font-size: 26px;
+        font-weight: 900;
+        box-shadow: 0 0 30px rgba(37, 215, 255, 0.14);
+      }
+
+      .loop-label.l1 {
+        left: 270px;
+        top: 0;
+      }
+
+      .loop-label.l2 {
+        right: 0;
+        top: 152px;
+      }
+
+      .loop-label.l3 {
+        right: 92px;
+        bottom: 0;
+      }
+
+      .loop-label.l4 {
+        left: 88px;
+        bottom: 0;
+      }
+
+      .loop-label.l5 {
+        left: 0;
+        top: 152px;
+      }
+
+      .loop-center {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 220px;
+        height: 220px;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #d6f7ff;
+        font-size: 31px;
+        line-height: 1.22;
+        font-weight: 900;
+        border: 1px solid rgba(65, 242, 161, 0.44);
+        background:
+          radial-gradient(circle, rgba(65, 242, 161, 0.18), rgba(37, 215, 255, 0.08) 58%, rgba(10, 24, 58, 0.78));
+        box-shadow:
+          inset 0 0 42px rgba(65, 242, 161, 0.13),
+          0 0 50px rgba(37, 215, 255, 0.2);
+      }
+
+      .loop-center span {
+        display: block;
+      }
+
+      .final-word {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #f3f7ff;
+        font-size: 58px;
+        line-height: 1.12;
+        font-weight: 900;
+        text-shadow:
+          0 0 22px rgba(37, 215, 255, 0.48),
+          0 0 58px rgba(138, 92, 255, 0.42);
+      }
+
+      #transition-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      #wipe {
+        position: absolute;
+        top: -160px;
+        left: -260px;
+        width: 460px;
+        height: 1400px;
+        transform: skewX(-16deg);
+        opacity: 0;
+        background:
+          linear-gradient(90deg, rgba(37, 215, 255, 0), rgba(37, 215, 255, 0.86), rgba(138, 92, 255, 0.72), rgba(37, 215, 255, 0));
+        filter: blur(4px);
+        box-shadow: 0 0 64px rgba(37, 215, 255, 0.65);
+      }
+
+      #scanline {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 2px;
+        opacity: 0;
+        background: linear-gradient(90deg, rgba(37, 215, 255, 0), #25d7ff, rgba(65, 242, 161, 0));
+        box-shadow: 0 0 18px rgba(37, 215, 255, 0.9);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="15"
+      data-width="1920"
+      data-height="1080"
+    >
+      <section id="scene1" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow a" data-layout-ignore></div>
+        <div class="glow b" data-layout-ignore></div>
+        <div class="glow c" data-layout-ignore></div>
+        <div class="scene-content intro-grid">
+          <div class="hero-copy">
+            <div id="s1-kicker" class="kicker">场景一｜系统登场</div>
+            <h1 id="s1-title" class="brand-title">NeuraFit</h1>
+            <div id="s1-subtitle" class="brand-subtitle">自学习视觉运动纠错系统</div>
+            <div id="s1-chips" class="core-chips">
+              <span class="chip">姿态识别</span>
+              <span class="chip">实时纠错</span>
+              <span class="chip">个性化进化</span>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div id="s1-ring" class="status-ring" data-layout-ignore></div>
+            <div id="s1-phone" class="phone">
+              <div class="phone-screen">
+                <div class="phone-notch"></div>
+                <div class="app-title"><span>运动纠错</span><span class="app-dot"></span></div>
+                <div class="phone-card large">
+                  <svg viewBox="0 0 300 330" class="skeleton-svg" aria-hidden="true">
+                    <path class="bone-soft" d="M150 58 L150 118 L108 170 L92 238 M150 118 L194 170 L210 238 M150 118 L150 210 L116 276 L104 310 M150 210 L184 276 L196 310" />
+                    <path class="bone" d="M150 58 L150 118 L108 170 L92 238 M150 118 L194 170 L210 238 M150 118 L150 210 L116 276 L104 310 M150 210 L184 276 L196 310" />
+                    <circle class="joint" cx="150" cy="58" r="13" />
+                    <circle class="joint" cx="150" cy="118" r="11" />
+                    <circle class="joint" cx="108" cy="170" r="10" />
+                    <circle class="joint" cx="194" cy="170" r="10" />
+                    <circle class="joint" cx="92" cy="238" r="9" />
+                    <circle class="joint" cx="210" cy="238" r="9" />
+                    <circle class="joint" cx="150" cy="210" r="11" />
+                    <circle class="joint" cx="116" cy="276" r="10" />
+                    <circle class="joint" cx="184" cy="276" r="10" />
+                    <circle class="joint" cx="104" cy="310" r="8" />
+                    <circle class="joint" cx="196" cy="310" r="8" />
+                  </svg>
+                </div>
+                <div class="phone-card medium">
+                  <div class="mini-label">当前评分</div>
+                  <div class="mini-value">86</div>
+                </div>
+                <div class="phone-card small">
+                  <div class="mini-label">训练进度</div>
+                  <div class="progress-track"><div class="progress-fill"></div></div>
+                </div>
+              </div>
+            </div>
+            <div id="s1-skeleton" class="standing-skeleton-wrap">
+              <svg viewBox="0 0 500 720" class="skeleton-svg" aria-hidden="true">
+                <path class="bone-soft" d="M250 64 L250 134 L180 184 L150 282 L128 390 M250 134 L320 184 L350 282 L372 390 M250 134 L250 332 L198 478 L172 646 M250 332 L302 478 L328 646" />
+                <path class="bone" d="M250 64 L250 134 L180 184 L150 282 L128 390 M250 134 L320 184 L350 282 L372 390 M250 134 L250 332 L198 478 L172 646 M250 332 L302 478 L328 646" />
+                <circle class="joint" cx="250" cy="64" r="18" />
+                <circle class="joint" cx="250" cy="134" r="14" />
+                <circle class="joint" cx="180" cy="184" r="13" />
+                <circle class="joint" cx="320" cy="184" r="13" />
+                <circle class="joint" cx="150" cy="282" r="12" />
+                <circle class="joint" cx="350" cy="282" r="12" />
+                <circle class="joint" cx="128" cy="390" r="11" />
+                <circle class="joint" cx="372" cy="390" r="11" />
+                <circle class="joint" cx="250" cy="332" r="14" />
+                <circle class="joint" cx="198" cy="478" r="13" />
+                <circle class="joint" cx="302" cy="478" r="13" />
+                <circle class="joint" cx="172" cy="646" r="12" />
+                <circle class="joint" cx="328" cy="646" r="12" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene2" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow a" data-layout-ignore></div>
+        <div class="glow b" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="scene-topbar">
+            <div>
+              <div id="s2-kicker" class="kicker">场景二｜输入层</div>
+              <h2 id="s2-title" class="scene-title">实时采集 + 姿态识别</h2>
+            </div>
+            <div id="s2-live" class="badge-live"><span class="pulse-dot"></span><span>实时运行</span></div>
+          </div>
+          <div class="s2-grid">
+            <div class="camera-column">
+              <div id="s2-phone" class="phone">
+                <div class="phone-screen">
+                  <div class="phone-notch"></div>
+                  <div class="app-title"><span>安卓端采集</span><span class="app-dot"></span></div>
+                  <div class="phone-card large">
+                    <svg viewBox="0 0 300 330" class="skeleton-svg" aria-hidden="true">
+                      <path class="bone" d="M150 58 L144 126 L105 172 L88 238 M144 126 L195 172 L214 238 M144 126 L130 214 L92 262 L76 312 M130 214 L188 258 L214 312" />
+                      <circle class="joint" cx="150" cy="58" r="11" />
+                      <circle class="joint" cx="144" cy="126" r="10" />
+                      <circle class="joint" cx="105" cy="172" r="9" />
+                      <circle class="joint" cx="195" cy="172" r="9" />
+                      <circle class="joint" cx="88" cy="238" r="8" />
+                      <circle class="joint" cx="214" cy="238" r="8" />
+                      <circle class="joint" cx="130" cy="214" r="10" />
+                      <circle class="joint" cx="92" cy="262" r="9" />
+                      <circle class="joint" cx="188" cy="258" r="9" />
+                      <circle class="joint" cx="76" cy="312" r="8" />
+                      <circle class="joint" cx="214" cy="312" r="8" />
+                    </svg>
+                  </div>
+                  <div class="phone-card medium">
+                    <div class="mini-label">采集帧率</div>
+                    <div class="mini-value">30 帧/秒</div>
+                  </div>
+                  <div class="phone-card small">
+                    <div class="mini-label">关键点</div>
+                    <div class="mini-value">33 个</div>
+                  </div>
+                </div>
+              </div>
+              <div id="s2-rays" class="camera-rays" data-layout-ignore>
+                <span class="ray"></span>
+                <span class="ray"></span>
+                <span class="ray"></span>
+              </div>
+            </div>
+            <div class="pose-stage">
+              <div id="s2-pose" class="pose-box glass">
+                <svg viewBox="0 0 500 700" class="skeleton-svg" aria-hidden="true">
+                  <path class="bone-soft" d="M250 55 L250 115 L185 160 L150 245 L130 325 M250 115 L315 160 L350 245 L370 325 M250 115 L250 210 L245 280 L250 360 M200 345 L165 480 L130 615 L105 645 L150 660 M300 345 L335 480 L370 615 L395 645 L350 660 M200 345 L300 345 M185 160 L315 160" />
+                  <path class="bone s2-bone" d="M250 55 L250 115 L185 160 L150 245 L130 325 M250 115 L315 160 L350 245 L370 325 M250 115 L250 210 L245 280 L250 360 M200 345 L165 480 L130 615 L105 645 L150 660 M300 345 L335 480 L370 615 L395 645 L350 660 M200 345 L300 345 M185 160 L315 160" />
+                  <g id="s2-joints">
+                    <circle class="joint" cx="250" cy="55" r="11" />
+                    <circle class="joint-small" cx="238" cy="48" r="7" />
+                    <circle class="joint-small" cx="262" cy="48" r="7" />
+                    <circle class="joint-small" cx="220" cy="60" r="7" />
+                    <circle class="joint-small" cx="280" cy="60" r="7" />
+                    <circle class="joint-small" cx="250" cy="75" r="7" />
+                    <circle class="joint" cx="250" cy="115" r="10" />
+                    <circle class="joint" cx="185" cy="160" r="10" />
+                    <circle class="joint" cx="315" cy="160" r="10" />
+                    <circle class="joint" cx="150" cy="245" r="9" />
+                    <circle class="joint" cx="350" cy="245" r="9" />
+                    <circle class="joint" cx="130" cy="325" r="9" />
+                    <circle class="joint" cx="370" cy="325" r="9" />
+                    <circle class="joint-small" cx="115" cy="335" r="7" />
+                    <circle class="joint-small" cx="385" cy="335" r="7" />
+                    <circle class="joint" cx="200" cy="345" r="10" />
+                    <circle class="joint" cx="300" cy="345" r="10" />
+                    <circle class="joint" cx="250" cy="360" r="10" />
+                    <circle class="joint" cx="165" cy="480" r="10" />
+                    <circle class="joint" cx="335" cy="480" r="10" />
+                    <circle class="joint" cx="130" cy="615" r="9" />
+                    <circle class="joint" cx="370" cy="615" r="9" />
+                    <circle class="joint-small" cx="105" cy="645" r="7" />
+                    <circle class="joint-small" cx="395" cy="645" r="7" />
+                    <circle class="joint-small" cx="150" cy="660" r="7" />
+                    <circle class="joint-small" cx="350" cy="660" r="7" />
+                    <circle class="joint-small" cx="250" cy="210" r="8" />
+                    <circle class="joint-small" cx="245" cy="280" r="8" />
+                    <circle class="joint-small" cx="125" cy="315" r="7" />
+                    <circle class="joint-small" cx="375" cy="315" r="7" />
+                    <circle class="joint-small" cx="108" cy="325" r="7" />
+                    <circle class="joint-small" cx="392" cy="325" r="7" />
+                    <circle class="joint-small" cx="250" cy="175" r="8" />
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <div class="right-notes">
+              <div id="s2-note1" class="note-card glass">
+                <h3>手机前深蹲</h3>
+                <p>摄像头连续采集画面，抽象人体姿态并转为骨架数据。</p>
+              </div>
+              <div id="s2-note2" class="note-card glass">
+                <h3>33 个关键点</h3>
+                <p>肩、髋、膝、踝等关节点被实时定位，形成运动轨迹。</p>
+                <div class="big-number">33</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene3" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow b" data-layout-ignore></div>
+        <div class="glow c" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="scene-topbar">
+            <div>
+              <div id="s3-kicker" class="kicker">场景三｜分析层</div>
+              <h2 id="s3-title" class="scene-title">关节角度分析 + 实时纠错</h2>
+            </div>
+            <div id="s3-live" class="badge-live"><span class="pulse-dot"></span><span>语音提示</span></div>
+          </div>
+          <div class="s3-grid">
+            <div id="s3-analysis" class="analysis-stage glass">
+              <svg viewBox="0 0 500 700" class="skeleton-svg" aria-hidden="true">
+                <path class="bone-soft" d="M250 55 L246 118 L182 166 L148 248 L128 326 M246 118 L318 166 L352 248 L372 326 M246 118 L238 216 L230 300 L250 360 M198 345 L166 480 L130 615 L106 645 L150 660 M300 345 L336 480 L370 615 L396 645 L350 660 M198 345 L300 345 M182 166 L318 166" />
+                <path class="bone" d="M250 55 L246 118 L182 166 L148 248 L128 326 M246 118 L318 166 L352 248 L372 326 M198 345 L166 480 L130 615 L106 645 L150 660 M300 345 L336 480 L370 615 L396 645 L350 660 M198 345 L300 345 M182 166 L318 166" />
+                <path id="s3-error-back" class="error-bone" d="M246 118 L238 216 L230 300 L250 360" />
+                <g id="s3-joints">
+                  <circle class="joint" cx="250" cy="55" r="11" />
+                  <circle class="error-joint" cx="246" cy="118" r="12" />
+                  <circle class="joint" cx="182" cy="166" r="10" />
+                  <circle class="joint" cx="318" cy="166" r="10" />
+                  <circle class="joint" cx="148" cy="248" r="9" />
+                  <circle class="joint" cx="352" cy="248" r="9" />
+                  <circle class="joint" cx="128" cy="326" r="9" />
+                  <circle class="joint" cx="372" cy="326" r="9" />
+                  <circle class="error-joint" cx="238" cy="216" r="10" />
+                  <circle class="error-joint" cx="230" cy="300" r="10" />
+                  <circle class="error-joint" cx="250" cy="360" r="12" />
+                  <circle class="joint" cx="198" cy="345" r="10" />
+                  <circle class="joint" cx="300" cy="345" r="10" />
+                  <circle class="joint" cx="166" cy="480" r="10" />
+                  <circle class="joint" cx="336" cy="480" r="10" />
+                  <circle class="joint" cx="130" cy="615" r="9" />
+                  <circle class="joint" cx="370" cy="615" r="9" />
+                </g>
+              </svg>
+            </div>
+            <div class="angle-panel glass">
+              <div id="s3-panel-head" class="panel-heading">
+                <span>角度数据面板</span>
+                <span class="scan-chip">正在纠错</span>
+              </div>
+              <div id="s3-row1" class="stat-row">
+                <div class="stat-name">左膝角度</div>
+                <div class="stat-value">106°</div>
+                <div class="bar"><span style="width: 62%"></span></div>
+              </div>
+              <div id="s3-row2" class="stat-row">
+                <div class="stat-name">右膝角度</div>
+                <div class="stat-value">108°</div>
+                <div class="bar"><span style="width: 64%"></span></div>
+              </div>
+              <div id="s3-row3" class="stat-row">
+                <div class="stat-name">背部倾斜角</div>
+                <div class="stat-value warning">32°</div>
+                <div class="bar warning"><span style="width: 84%"></span></div>
+              </div>
+              <div id="s3-warning" class="warning-card glass">
+                <div class="warning-title">纠错提示</div>
+                <div class="warning-text">背部前倾过大，请收紧核心</div>
+                <div class="voice-wave" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene4" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow a" data-layout-ignore></div>
+        <div class="glow c" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="scene-topbar">
+            <div>
+              <div id="s4-kicker" class="kicker">场景四｜记录层</div>
+              <h2 id="s4-title" class="scene-title">训练数据自动记录</h2>
+            </div>
+          </div>
+          <div class="s4-grid">
+            <div id="s4-cards" class="data-list">
+              <div class="data-card glass">
+                <div class="label">训练次数</div>
+                <div class="value">128 次</div>
+                <div class="sub">按动作周期自动切片</div>
+              </div>
+              <div class="data-card glass">
+                <div class="label">动作评分</div>
+                <div class="value">78 分</div>
+                <div class="sub">结合角度与稳定性</div>
+              </div>
+              <div class="data-card glass">
+                <div class="label">错误类型</div>
+                <div class="value">背部前倾</div>
+                <div class="sub">高频问题自动归类</div>
+              </div>
+              <div class="data-card glass">
+                <div class="label">动作样本</div>
+                <div class="value">3,420 帧</div>
+                <div class="sub">持续沉淀训练集</div>
+              </div>
+            </div>
+            <div id="s4-flow" class="flow-field">
+              <div class="flow-line one"></div>
+              <div class="flow-line two"></div>
+              <div class="flow-line three"></div>
+              <div class="data-packet">角度</div>
+              <div class="data-packet">评分</div>
+              <div class="data-packet">样本</div>
+            </div>
+            <div id="s4-db" class="db-wrap glass">
+              <div class="database" aria-hidden="true">
+                <div class="db-cylinder">
+                  <span class="db-line l1"></span>
+                  <span class="db-line l2"></span>
+                </div>
+              </div>
+              <div class="db-label">训练数据库</div>
+              <div class="db-detail">每次训练都会成为下一轮学习的数据燃料</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene5" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow b" data-layout-ignore></div>
+        <div class="glow c" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="scene-topbar">
+            <div>
+              <div id="s5-kicker" class="kicker">场景五｜学习层</div>
+              <h2 id="s5-title" class="scene-title">个性化学习与阈值调整</h2>
+            </div>
+          </div>
+          <div class="s5-grid">
+            <div id="s5-profile" class="profile-card glass">
+              <div>
+                <div class="panel-heading"><span>用户画像</span><span class="scan-chip">动态更新</span></div>
+                <div class="avatar-core" aria-hidden="true"></div>
+                <div class="profile-name">深蹲训练者</div>
+                <div class="profile-tags">
+                  <span>膝部稳定</span>
+                  <span>核心不足</span>
+                  <span>进步明显</span>
+                </div>
+              </div>
+            </div>
+            <div id="s5-dashboard" class="dashboard glass">
+              <div class="dash-card glass">
+                <div class="dash-label">最近平均分</div>
+                <div class="dash-value">78</div>
+              </div>
+              <div class="dash-card glass">
+                <div class="dash-label">主要错误</div>
+                <div class="dash-value">背部前倾</div>
+              </div>
+              <div class="dash-card glass">
+                <div class="dash-label">训练趋势</div>
+                <div class="dash-value good">进步明显</div>
+              </div>
+              <div class="dash-card glass">
+                <div class="dash-label">阈值变化</div>
+                <div class="threshold-change">
+                  <span class="old">35°</span><span class="arrow">→</span><span class="new">32°</span>
+                </div>
+              </div>
+              <div class="dash-card wide glass">
+                <div class="dash-label">背部倾斜阈值</div>
+                <svg class="trend-svg" viewBox="0 0 760 118" aria-hidden="true">
+                  <path d="M16 92 C130 82 188 78 276 62 S448 34 560 38 S676 24 744 18" fill="none" stroke="rgba(65, 242, 161, 0.22)" stroke-width="18" stroke-linecap="round" />
+                  <path id="s5-trend-line" d="M16 92 C130 82 188 78 276 62 S448 34 560 38 S676 24 744 18" fill="none" stroke="#41F2A1" stroke-width="6" stroke-linecap="round" />
+                  <circle cx="16" cy="92" r="8" fill="#25D7FF" />
+                  <circle cx="744" cy="18" r="10" fill="#41F2A1" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene6" class="scene">
+        <div class="bg-grid" data-layout-ignore></div>
+        <div class="glow a" data-layout-ignore></div>
+        <div class="glow b" data-layout-ignore></div>
+        <div class="glow c" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="scene-topbar">
+            <div>
+              <div id="s6-kicker" class="kicker">场景六｜闭环进化</div>
+              <h2 id="s6-title" class="scene-title">训练样本驱动系统持续进化</h2>
+            </div>
+          </div>
+          <div class="s6-grid">
+            <div id="s6-pipeline" class="pipeline">
+              <div class="pipe-step glass"><div class="pipe-index">01</div><div class="pipe-title">训练样本</div></div>
+              <div class="pipe-step glass"><div class="pipe-index">02</div><div class="pipe-title">训练集</div></div>
+              <div class="pipe-step glass"><div class="pipe-index">03</div><div class="pipe-title">新模型</div></div>
+              <div class="pipe-step glass"><div class="pipe-index">04</div><div class="pipe-title">应用更新</div></div>
+            </div>
+            <div class="loop-stage">
+              <div id="s6-loop" class="loop-orbit">
+                <svg class="orbit-svg" viewBox="0 0 670 470" aria-hidden="true">
+                  <defs>
+                    <marker id="arrow-tip" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                      <path d="M0 0 L12 6 L0 12 Z" fill="#25D7FF" />
+                    </marker>
+                  </defs>
+                  <ellipse cx="335" cy="235" rx="260" ry="178" fill="none" stroke="rgba(37, 215, 255, 0.2)" stroke-width="22" />
+                  <path id="s6-orbit-path" d="M335 57 C498 57 595 144 595 235 C595 326 498 413 335 413 C172 413 75 326 75 235 C75 144 172 57 335 57" fill="none" stroke="#25D7FF" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-tip)" />
+                </svg>
+                <div class="loop-label l1">识别</div>
+                <div class="loop-label l2">纠错</div>
+                <div class="loop-label l3">记录</div>
+                <div class="loop-label l4">学习</div>
+                <div class="loop-label l5">进化</div>
+                <div class="loop-center"><span>闭环</span><span>自学习</span></div>
+              </div>
+            </div>
+            <div id="s6-final" class="final-word">NeuraFit 越用越懂你</div>
+          </div>
+        </div>
+      </section>
+
+      <div id="transition-layer" data-layout-ignore>
+        <div id="wipe"></div>
+        <div id="scanline"></div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      function scanTransition(fromScene, toScene, at) {
+        tl.set(toScene, { opacity: 1, zIndex: 8, clipPath: "inset(0 100% 0 0)" }, at);
+        tl.set(fromScene, { zIndex: 4 }, at);
+        tl.fromTo("#wipe", { x: -260, opacity: 0 }, { x: 2160, opacity: 0.95, duration: 0.46, ease: "power3.inOut" }, at);
+        tl.fromTo("#scanline", { y: 0, opacity: 0 }, { y: 1080, opacity: 0.85, duration: 0.46, ease: "power2.inOut" }, at);
+        tl.to(toScene, { clipPath: "inset(0 0% 0 0)", duration: 0.44, ease: "power3.inOut" }, at + 0.03);
+        tl.set("#wipe", { opacity: 0 }, at + 0.48);
+        tl.set("#scanline", { opacity: 0 }, at + 0.48);
+        tl.set(fromScene, { opacity: 0, zIndex: 1 }, at + 0.5);
+        tl.set(toScene, { clipPath: "none", zIndex: 2 }, at + 0.5);
+      }
+
+      function drawPaths(selector, at, duration) {
+        tl.from(selector, { strokeDasharray: 900, strokeDashoffset: 900, duration, ease: "power2.out" }, at);
+      }
+
+      tl.to(".glow.a", { scale: 1.08, opacity: 0.58, duration: 2.4, repeat: 6, yoyo: true, ease: "sine.inOut" }, 0);
+      tl.to(".glow.b", { scale: 1.1, opacity: 0.62, duration: 2.1, repeat: 7, yoyo: true, ease: "sine.inOut" }, 0.2);
+      tl.to(".glow.c", { scale: 1.12, opacity: 0.34, duration: 2.8, repeat: 5, yoyo: true, ease: "sine.inOut" }, 0.1);
+
+      tl.from("#s1-kicker", { y: 28, opacity: 0, duration: 0.42, ease: "power3.out" }, 0.15);
+      tl.from("#s1-title", { y: 54, opacity: 0, scale: 0.96, duration: 0.58, ease: "expo.out" }, 0.24);
+      tl.from("#s1-subtitle", { x: -34, opacity: 0, duration: 0.45, ease: "power2.out" }, 0.48);
+      tl.from("#s1-chips .chip", { y: 26, opacity: 0, scale: 0.92, stagger: 0.08, duration: 0.34, ease: "back.out(1.7)" }, 0.68);
+      tl.from("#s1-phone", { x: 72, y: 24, rotation: -10, opacity: 0, duration: 0.56, ease: "power4.out" }, 0.38);
+      tl.from("#s1-skeleton", { x: 60, opacity: 0, scale: 0.92, duration: 0.62, ease: "circ.out" }, 0.55);
+      tl.from("#s1-ring", { scale: 0.72, opacity: 0, duration: 0.7, ease: "power2.out" }, 0.66);
+
+      scanTransition("#scene1", "#scene2", 1.86);
+      tl.from("#s2-kicker", { y: 22, opacity: 0, duration: 0.32, ease: "power3.out" }, 2.08);
+      tl.from("#s2-title", { x: -46, opacity: 0, duration: 0.42, ease: "expo.out" }, 2.16);
+      tl.from("#s2-live", { scale: 0.84, opacity: 0, duration: 0.34, ease: "back.out(1.9)" }, 2.24);
+      tl.from("#s2-phone", { x: -70, rotation: -4, opacity: 0, duration: 0.48, ease: "power4.out" }, 2.18);
+      tl.from("#s2-rays .ray", { scaleX: 0, opacity: 0, stagger: 0.08, duration: 0.38, ease: "power2.out" }, 2.46);
+      tl.from("#s2-pose", { y: 40, opacity: 0, scale: 0.96, duration: 0.46, ease: "circ.out" }, 2.28);
+      drawPaths(".s2-bone", 2.48, 0.52);
+      tl.from("#s2-joints circle", { scale: 0, opacity: 0, transformOrigin: "center center", stagger: { amount: 0.52, from: "center" }, duration: 0.26, ease: "back.out(2)" }, 2.56);
+      tl.from("#s2-note1", { x: 44, opacity: 0, duration: 0.38, ease: "power3.out" }, 2.72);
+      tl.from("#s2-note2", { x: 44, opacity: 0, scale: 0.96, duration: 0.42, ease: "back.out(1.4)" }, 2.9);
+      tl.to("#s2-pose", { y: -10, duration: 0.68, repeat: 2, yoyo: true, ease: "sine.inOut" }, 3.18);
+
+      scanTransition("#scene2", "#scene3", 4.86);
+      tl.from("#s3-kicker", { y: 24, opacity: 0, duration: 0.32, ease: "power3.out" }, 5.08);
+      tl.from("#s3-title", { x: -48, opacity: 0, duration: 0.42, ease: "expo.out" }, 5.14);
+      tl.from("#s3-live", { scale: 0.82, opacity: 0, duration: 0.35, ease: "back.out(1.8)" }, 5.24);
+      tl.from("#s3-analysis", { x: -44, opacity: 0, scale: 0.96, duration: 0.42, ease: "circ.out" }, 5.22);
+      tl.from("#s3-error-back", { strokeDasharray: 520, strokeDashoffset: 520, duration: 0.48, ease: "power2.out" }, 5.5);
+      tl.from("#s3-joints circle", { scale: 0, opacity: 0, transformOrigin: "center center", stagger: 0.025, duration: 0.22, ease: "back.out(2.1)" }, 5.42);
+      tl.from(".angle-panel", { x: 54, opacity: 0, duration: 0.44, ease: "power4.out" }, 5.28);
+      tl.from("#s3-panel-head", { y: 20, opacity: 0, duration: 0.28, ease: "power2.out" }, 5.46);
+      tl.from("#s3-row1", { x: 34, opacity: 0, duration: 0.26, ease: "power2.out" }, 5.62);
+      tl.from("#s3-row2", { x: 34, opacity: 0, duration: 0.26, ease: "power3.out" }, 5.78);
+      tl.from("#s3-row3", { x: 34, opacity: 0, duration: 0.28, ease: "back.out(1.5)" }, 5.94);
+      tl.from(".bar span", { scaleX: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" }, 5.72);
+      tl.from("#s3-warning", { y: 36, opacity: 0, scale: 0.95, duration: 0.4, ease: "back.out(1.5)" }, 6.18);
+      tl.from(".voice-wave span", { scaleY: 0.25, opacity: 0.4, stagger: 0.05, duration: 0.24, ease: "power2.out" }, 6.45);
+      tl.to(".voice-wave span", { scaleY: 2.2, duration: 0.24, repeat: 4, yoyo: true, stagger: 0.05, ease: "sine.inOut" }, 6.72);
+
+      scanTransition("#scene3", "#scene4", 7.86);
+      tl.from("#s4-kicker", { y: 22, opacity: 0, duration: 0.28, ease: "power3.out" }, 8.06);
+      tl.from("#s4-title", { x: -44, opacity: 0, duration: 0.34, ease: "expo.out" }, 8.12);
+      tl.from("#s4-cards .data-card", { y: 34, opacity: 0, scale: 0.96, stagger: 0.08, duration: 0.32, ease: "back.out(1.5)" }, 8.18);
+      tl.from("#s4-db", { x: 44, opacity: 0, scale: 0.94, duration: 0.4, ease: "circ.out" }, 8.3);
+      tl.from("#s4-flow .flow-line", { scaleX: 0, opacity: 0, transformOrigin: "left center", stagger: 0.08, duration: 0.32, ease: "power2.out" }, 8.36);
+      tl.fromTo("#s4-flow .data-packet", { x: 0, opacity: 0 }, { x: 250, opacity: 1, stagger: 0.12, duration: 0.62, ease: "power3.inOut" }, 8.54);
+      tl.to("#s4-flow .data-packet", { x: 310, opacity: 0, stagger: 0.12, duration: 0.26, ease: "power2.in" }, 9.22);
+
+      scanTransition("#scene4", "#scene5", 9.86);
+      tl.from("#s5-kicker", { y: 22, opacity: 0, duration: 0.28, ease: "power3.out" }, 10.06);
+      tl.from("#s5-title", { x: -44, opacity: 0, duration: 0.38, ease: "expo.out" }, 10.1);
+      tl.from("#s5-profile", { x: -46, opacity: 0, scale: 0.96, duration: 0.42, ease: "circ.out" }, 10.22);
+      tl.from(".avatar-core", { scale: 0.7, opacity: 0, duration: 0.44, ease: "back.out(1.9)" }, 10.46);
+      tl.from(".profile-tags span", { y: 18, opacity: 0, stagger: 0.07, duration: 0.25, ease: "power2.out" }, 10.72);
+      tl.from("#s5-dashboard", { x: 50, opacity: 0, duration: 0.44, ease: "power4.out" }, 10.28);
+      tl.from("#s5-dashboard .dash-card", { y: 28, opacity: 0, scale: 0.97, stagger: 0.08, duration: 0.3, ease: "back.out(1.4)" }, 10.52);
+      tl.from("#s5-trend-line", { strokeDasharray: 900, strokeDashoffset: 900, duration: 0.72, ease: "power2.out" }, 11.08);
+      tl.from(".threshold-change .old", { y: 18, opacity: 0, duration: 0.24, ease: "power2.out" }, 11.2);
+      tl.from(".threshold-change .arrow", { scale: 0, opacity: 0, duration: 0.24, ease: "back.out(2)" }, 11.38);
+      tl.from(".threshold-change .new", { y: -18, opacity: 0, scale: 1.08, duration: 0.32, ease: "power3.out" }, 11.56);
+
+      scanTransition("#scene5", "#scene6", 12.86);
+      tl.from("#s6-kicker", { y: 22, opacity: 0, duration: 0.26, ease: "power3.out" }, 13.05);
+      tl.from("#s6-title", { x: -40, opacity: 0, duration: 0.34, ease: "expo.out" }, 13.08);
+      tl.from("#s6-pipeline .pipe-step", { y: 28, opacity: 0, scale: 0.96, stagger: 0.08, duration: 0.28, ease: "back.out(1.6)" }, 13.16);
+      tl.from("#s6-loop", { scale: 0.82, opacity: 0, duration: 0.42, ease: "circ.out" }, 13.38);
+      tl.from("#s6-orbit-path", { strokeDasharray: 1700, strokeDashoffset: 1700, duration: 0.7, ease: "power2.out" }, 13.54);
+      tl.from(".loop-label", { scale: 0, opacity: 0, stagger: { amount: 0.34, from: "center" }, duration: 0.26, ease: "back.out(2)" }, 13.66);
+      tl.from(".loop-center", { scale: 0.72, opacity: 0, duration: 0.32, ease: "power4.out" }, 13.86);
+      tl.from("#s6-final", { y: 36, opacity: 0, scale: 0.96, duration: 0.42, ease: "expo.out" }, 14.22);
+      tl.to("#s6-loop", { rotation: 4, transformOrigin: "50% 50%", duration: 0.7, ease: "sine.inOut" }, 14.18);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

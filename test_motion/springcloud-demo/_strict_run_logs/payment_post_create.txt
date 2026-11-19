@@ -1,0 +1,2 @@
+﻿{"timestamp":"2026-06-15T04:01:57.348+00:00","status":400,"error":"Bad Request","message":"","path":"/api/payment/create"}
+HTTP_STATUS:400

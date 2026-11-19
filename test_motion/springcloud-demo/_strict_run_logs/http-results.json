@@ -1,0 +1,38 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/payment/create",
+    "httpStatus": 200,
+    "body": "{\"code\":200,\"message\":\"支付记录创建成功 [端口:8001]\",\"data\":1}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/payment/create",
+    "httpStatus": 404,
+    "body": "{\"timestamp\":\"2026-06-15T04:04:32.821+00:00\",\"path\":\"/api/payment/create\",\"status\":404,\"error\":\"Not Found\",\"message\":null,\"requestId\":\"426906fe-15\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/payment/get/1",
+    "httpStatus": 200,
+    "body": "{\"code\":200,\"message\":\"查询成功 [端口:8001]\",\"data\":{\"id\":1,\"serial\":\"strict-payment-create\"}}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/order/create",
+    "httpStatus": 200,
+    "body": "{\"code\":200,\"message\":\"支付记录创建成功 [端口:8001]\",\"data\":1}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/create",
+    "httpStatus": 404,
+    "body": "{\"timestamp\":\"2026-06-15T04:04:32.842+00:00\",\"path\":\"/api/order/create\",\"status\":404,\"error\":\"Not Found\",\"message\":null,\"requestId\":\"426906fe-18\"}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/order/get/1",
+    "httpStatus": 200,
+    "body": "{\"code\":200,\"message\":\"查询成功 [端口:8001]\",\"data\":{\"id\":1,\"serial\":\"strict-payment-create\"}}"
+  }
+]

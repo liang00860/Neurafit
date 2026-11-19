@@ -1,0 +1,53 @@
+server:
+  port: 9527
+
+spring:
+  application:
+    name: cloud-gateway
+  
+  cloud:
+    gateway:
+      routes:
+        # ===================== 订单服务路由 =====================
+        # 创建订单接口：Path + Method 断言，仅允许 POST
+        - id: order_create_route
+          uri: lb://CLOUD-ORDER-SERVICE
+          predicates:
+            - Path=/api/order/create
+            - Method=POST
+
+        # 订单服务查询、熔断等 GET 接口
+        - id: order_route
+          uri: lb://CLOUD-ORDER-SERVICE
+          predicates:
+            - Path=/api/order/get/**,/api/order/timeout/fallback,/api/order/error/fallback,/api/order/circuit/**
+            - Method=GET
+
+        # ===================== 支付服务路由 =====================
+        # 创建支付接口：Path + Method 断言，仅允许 POST
+        - id: payment_create_route
+          uri: lb://CLOUD-PAYMENT-SERVICE
+          predicates:
+            - Path=/api/payment/create
+            - Method=POST
+
+        # 支付服务查询、测试等 GET 接口
+        - id: payment_route
+          uri: lb://CLOUD-PAYMENT-SERVICE
+          predicates:
+            - Path=/api/payment/get/**,/api/payment/timeout,/api/payment/error
+            - Method=GET
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka8761.com:8761/eureka/,http://eureka8762.com:8762/eureka/
+  instance:
+    instance-id: gateway-9527
+    prefer-ip-address: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: debug

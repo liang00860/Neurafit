@@ -1,0 +1,11 @@
+sampleId,actionName,expectedCount,expectedErrors,leftKneeAngle,rightKneeAngle,torsoTiltAngle,leftRightKneeDistance,leftElbowAngle,rightElbowAngle,bodyLineAngle,bodyDescent,hipOffsetFromBodyLine,repDurationMs
+squat-001,SQUAT,1,NONE,92,95,18,0.18,,,,,,
+squat-002,SQUAT,1,SQUAT_TOO_SHALLOW,132,136,20,0.17,,,,,,
+squat-003,SQUAT,1,BACK_LEAN_TOO_MUCH,96,98,46,0.18,,,,,,
+squat-004,SQUAT,1,KNEE_VALGUS,94,97,20,0.05,,,,,,
+squat-005,SQUAT,1,SQUAT_TOO_SHALLOW|KNEE_VALGUS,128,130,22,0.05,,,,,,
+pushup-001,PUSH_UP,1,NONE,,,,,82,86,170,0.10,0.00,1400
+pushup-002,PUSH_UP,1,PUSH_UP_TOO_SHALLOW,,,,,124,126,170,0.03,0.00,1300
+pushup-003,PUSH_UP,1,WAIST_COLLAPSE,,,,,88,90,148,0.10,0.08,1300
+pushup-004,PUSH_UP,1,HIPS_TOO_HIGH,,,,,88,91,152,0.10,-0.08,1300
+pushup-005,PUSH_UP,1,PUSH_UP_TOO_FAST,,,,,86,88,168,0.09,0.00,650

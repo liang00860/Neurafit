@@ -1,0 +1,88 @@
+# Dependencies
+**/node_modules/
+
+# Build output
+**/dist/
+**/build/
+**/.gradle/
+**/.kotlin/
+**/.gradle-user-home/
+**/app/build/
+**/local.properties
+AndroidAPP/untitled/gradle.properties
+AndroidAPP/untitled/datasets/
+AndroidAPP/untitled/reports/
+AndroidAPP/untitled/debug-*.md
+
+# Environment and secrets
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.jks
+
+# Logs and local runtime data
+**/*.log
+**/*.out
+**/*.err
+**/_run_logs/
+**/.dbg/
+**/hs_err_pid*.log
+**/replay_pid*.log
+
+# IDE and OS files
+**/.idea/
+**/.vscode/
+**/.DS_Store
+**/*.iml
+
+# Browser profiles and generated inspection data
+test_motion/_chrome_screenshot_profile/
+test_motion/_chrome_strict_screenshot_profile/
+test_motion/_doc_read/
+test_motion/_pdf_convert/
+test_motion/_report_work/
+test_motion/_thesis_work/
+
+# Local demos, recordings, archives and screenshots outside source assets
+neurafit演示视频/
+nurafit/
+test_motion/springcloud-demo-completed.zip
+test_motion/gateway-*.html
+test_motion/gateway-*.png
+test_motion/debug-*.md
+AndroidAPP/debug-*.md
+AndroidAPP/window_dump*.xml
+AndroidAPP/screen_onboarding.png
+
+# Generated visual experiments and scratch files
+test_motion/next-app/cwm-*
+test_motion/next-app/debug-*.md
+test_motion/next-app/local_*.png
+test_motion/next-app/test-*.png
+test_motion/next-app/screenshot.png
+test_motion/next-app/*preview*.png
+test_motion/next-app/diff*.txt
+test_motion/next-app/*.html
+!test_motion/next-app/index.html
+test_motion/next-app/puppeteer*.cjs
+test_motion/next-app/parse*.cjs
+test_motion/next-app/fetch*.cjs
+test_motion/next-app/fetch.js
+test_motion/next-app/slater*.js
+
+# Nested workbench repository metadata
+test_motion/.git/
+
+# Bundled runtimes and third-party checkouts (not project source)
+AndroidAPP/jbr/
+AndroidAPP/GSAP/
+AndroidAPP/neurafit-style-demo/
+
+# Generated demo caches (renders/ are kept)
+AndroidAPP/neurafit-demo/.hyperframes/
+AndroidAPP/neurafit-demo/.thumbnails/
+AndroidAPP/neurafit-io-demo/.hyperframes/
+AndroidAPP/neurafit-io-demo/.thumbnails/

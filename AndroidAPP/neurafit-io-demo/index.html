@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f8fbff;
+        color: #1f2937;
+        font-family: "Noto Sans JP", sans-serif;
+        letter-spacing: 0;
+      }
+
+      body {
+        font-variant-numeric: tabular-nums;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f8fbff;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background:
+          linear-gradient(120deg, rgba(66, 133, 244, 0.08), rgba(66, 133, 244, 0) 34%),
+          linear-gradient(250deg, rgba(161, 66, 244, 0.07), rgba(161, 66, 244, 0) 36%),
+          #f8fbff;
+      }
+
+      #scene1 {
+        z-index: 2;
+        opacity: 1;
+      }
+
+      #scene2,
+      #scene3,
+      #scene4,
+      #scene5,
+      #scene6,
+      #scene7 {
+        z-index: 1;
+        opacity: 0;
+      }
+
+      .scene-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 76px 96px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+
+      .decor-grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.62;
+        background-image:
+          radial-gradient(circle, rgba(66, 133, 244, 0.22) 0 2px, rgba(66, 133, 244, 0) 2.4px),
+          linear-gradient(rgba(66, 133, 244, 0.08) 1px, rgba(66, 133, 244, 0) 1px),
+          linear-gradient(90deg, rgba(52, 168, 83, 0.07) 1px, rgba(52, 168, 83, 0) 1px);
+        background-size: 54px 54px, 108px 108px, 108px 108px;
+        mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.18) 62%, rgba(0, 0, 0, 0.05));
+      }
+
+      .ribbon {
+        position: absolute;
+        border-radius: 32px;
+        pointer-events: none;
+        opacity: 0.72;
+        filter: blur(0.2px);
+      }
+
+      .ribbon.blue {
+        width: 520px;
+        height: 28px;
+        right: -120px;
+        top: 118px;
+        transform: rotate(-18deg);
+        background: linear-gradient(90deg, rgba(66, 133, 244, 0), rgba(66, 133, 244, 0.28), rgba(0, 184, 217, 0.18));
+      }
+
+      .ribbon.green {
+        width: 430px;
+        height: 24px;
+        left: -120px;
+        bottom: 154px;
+        transform: rotate(14deg);
+        background: linear-gradient(90deg, rgba(52, 168, 83, 0), rgba(52, 168, 83, 0.22), rgba(249, 171, 0, 0.2));
+      }
+
+      .ribbon.purple {
+        width: 410px;
+        height: 26px;
+        right: 260px;
+        bottom: 60px;
+        transform: rotate(-9deg);
+        background: linear-gradient(90deg, rgba(161, 66, 244, 0), rgba(161, 66, 244, 0.2), rgba(66, 133, 244, 0.12));
+      }
+
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        width: max-content;
+        min-height: 42px;
+        padding: 0 16px;
+        border-radius: 22px;
+        background: rgba(66, 133, 244, 0.1);
+        color: #2364d8;
+        font-size: 22px;
+        line-height: 1;
+        font-weight: 800;
+      }
+
+      .headline {
+        color: #1f2937;
+        font-size: 66px;
+        line-height: 1.1;
+        font-weight: 900;
+      }
+
+      .subhead {
+        color: #5b6472;
+        font-size: 30px;
+        line-height: 1.45;
+        font-weight: 500;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 32px;
+      }
+
+      .topbar .headline {
+        max-width: 1160px;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 24px;
+        background: #ffffff;
+        border: 1px solid rgba(66, 133, 244, 0.18);
+        color: #1f2937;
+        box-shadow: 0 14px 42px rgba(66, 133, 244, 0.12);
+        font-size: 21px;
+        font-weight: 800;
+      }
+
+      .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #34a853;
+        box-shadow: 0 0 0 7px rgba(52, 168, 83, 0.15);
+      }
+
+      .card {
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.86);
+        border: 1px solid rgba(138, 151, 172, 0.18);
+        box-shadow: 0 20px 70px rgba(31, 41, 55, 0.1);
+      }
+
+      .soft-card {
+        border-radius: 24px;
+        background: #ffffff;
+        border: 1px solid rgba(138, 151, 172, 0.18);
+        box-shadow: 0 16px 52px rgba(31, 41, 55, 0.09);
+      }
+
+      .icon-circle {
+        width: 56px;
+        height: 56px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1f2937;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .blue-bg {
+        background: #dbe8ff;
+        color: #185abc;
+      }
+
+      .green-bg {
+        background: #dcf4e4;
+        color: #137333;
+      }
+
+      .orange-bg {
+        background: #fff1c7;
+        color: #7a4d00;
+      }
+
+      .purple-bg {
+        background: #efe2ff;
+        color: #7b1fd3;
+      }
+
+      .red-bg {
+        background: #fce5e1;
+        color: #b3261e;
+      }
+
+      .phone {
+        width: 360px;
+        height: 720px;
+        padding: 16px;
+        border-radius: 48px;
+        background: #1f2937;
+        box-shadow: 0 24px 76px rgba(31, 41, 55, 0.22);
+      }
+
+      .screen {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 34px;
+        background: #f8fbff;
+      }
+
+      .notch {
+        position: absolute;
+        top: 13px;
+        left: 50%;
+        width: 96px;
+        height: 18px;
+        transform: translateX(-50%);
+        border-radius: 18px;
+        background: #111827;
+      }
+
+      .appbar {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        top: 54px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #1f2937;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .app-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #34a853;
+      }
+
+      .phone-panel {
+        position: absolute;
+        left: 24px;
+        right: 24px;
+        border-radius: 22px;
+        background: #ffffff;
+        border: 1px solid rgba(66, 133, 244, 0.16);
+        box-shadow: 0 12px 35px rgba(31, 41, 55, 0.08);
+      }
+
+      .phone-panel.camera {
+        top: 104px;
+        height: 360px;
+        overflow: hidden;
+      }
+
+      .phone-panel.info {
+        top: 486px;
+        height: 82px;
+        padding: 16px;
+      }
+
+      .phone-panel.score {
+        top: 588px;
+        height: 74px;
+        padding: 14px 16px;
+      }
+
+      .mini-label {
+        color: #5b6472;
+        font-size: 16px;
+        line-height: 1.1;
+        font-weight: 800;
+      }
+
+      .mini-value {
+        margin-top: 8px;
+        color: #4285f4;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 900;
+      }
+
+      .progress {
+        margin-top: 12px;
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: #e8f0fe;
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        width: 76%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #4285f4, #34a853);
+        transform-origin: left center;
+      }
+
+      .skeleton-svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      .figure-body {
+        fill: #e8f0fe;
+        stroke: #4285f4;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .bone {
+        fill: none;
+        stroke: #00b8d9;
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 6px 12px rgba(0, 184, 217, 0.18));
+      }
+
+      .bone-muted {
+        fill: none;
+        stroke: rgba(0, 184, 217, 0.22);
+        stroke-width: 22;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .joint,
+      .kp {
+        fill: #00b8d9;
+        stroke: #ffffff;
+        stroke-width: 4;
+      }
+
+      .kp-small {
+        fill: #4285f4;
+        stroke: #ffffff;
+        stroke-width: 3;
+      }
+
+      .error-line {
+        fill: none;
+        stroke: #ea4335;
+        stroke-width: 14;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        filter: drop-shadow(0 8px 16px rgba(234, 67, 53, 0.2));
+      }
+
+      .error-point {
+        fill: #ea4335;
+        stroke: #ffffff;
+        stroke-width: 5;
+      }
+
+      .arrow {
+        position: relative;
+        height: 5px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #4285f4, #34a853);
+        box-shadow: 0 8px 18px rgba(66, 133, 244, 0.18);
+      }
+
+      .arrow::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        right: -3px;
+        width: 19px;
+        height: 19px;
+        border-top: 5px solid #34a853;
+        border-right: 5px solid #34a853;
+        transform: rotate(45deg);
+        border-radius: 3px;
+      }
+
+      .scene1-layout {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        align-items: center;
+        gap: 62px;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+
+      .brand {
+        color: #1f2937;
+        font-size: 126px;
+        line-height: 0.95;
+        font-weight: 900;
+      }
+
+      .subtitle {
+        color: #3d4654;
+        font-size: 40px;
+        line-height: 1.25;
+        font-weight: 700;
+      }
+
+      .hero-pills {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+
+      .hero-pill {
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 24px;
+        display: inline-flex;
+        align-items: center;
+        background: #ffffff;
+        color: #1f2937;
+        border: 1px solid rgba(138, 151, 172, 0.18);
+        box-shadow: 0 12px 34px rgba(31, 41, 55, 0.08);
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .module-stage {
+        position: relative;
+        height: 790px;
+      }
+
+      .module-card {
+        position: absolute;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .module-card h3 {
+        color: #1f2937;
+        font-size: 30px;
+        line-height: 1.15;
+        font-weight: 900;
+      }
+
+      .module-card p {
+        color: #5b6472;
+        font-size: 20px;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      .module-card.m1 {
+        left: 20px;
+        top: 50px;
+        width: 330px;
+      }
+
+      .module-card.m2 {
+        left: 390px;
+        top: 8px;
+        width: 390px;
+      }
+
+      .module-card.m3 {
+        left: 108px;
+        top: 330px;
+        width: 360px;
+      }
+
+      .module-card.m4 {
+        right: 10px;
+        top: 292px;
+        width: 360px;
+      }
+
+      .module-card.m5 {
+        left: 400px;
+        bottom: 42px;
+        width: 330px;
+      }
+
+      .center-device {
+        position: absolute;
+        left: 332px;
+        top: 212px;
+        width: 260px;
+        height: 260px;
+        border-radius: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #dbe8ff, #d9f7ef);
+        color: #185abc;
+        font-size: 42px;
+        line-height: 1.1;
+        text-align: center;
+        font-weight: 900;
+        border: 1px solid rgba(66, 133, 244, 0.18);
+        box-shadow: 0 28px 88px rgba(66, 133, 244, 0.18);
+      }
+
+      .center-device span {
+        display: block;
+      }
+
+      .scene2-layout {
+        display: grid;
+        grid-template-columns: 460px 240px 1fr;
+        align-items: center;
+        gap: 44px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .stream-zone {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 34px;
+      }
+
+      .stream-arrow {
+        width: 210px;
+      }
+
+      .stream-chip {
+        padding: 18px 20px;
+        border-radius: 24px;
+        background: #ffffff;
+        border: 1px solid rgba(66, 133, 244, 0.18);
+        color: #2364d8;
+        box-shadow: 0 12px 36px rgba(66, 133, 244, 0.1);
+        font-size: 24px;
+        line-height: 1.25;
+        font-weight: 900;
+      }
+
+      .person-panel {
+        height: 720px;
+        padding: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .scene3-layout {
+        display: grid;
+        grid-template-columns: 700px 1fr;
+        gap: 46px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .pose-card {
+        height: 740px;
+        padding: 34px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .labels-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .label-chip {
+        min-height: 82px;
+        padding: 18px 20px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: #ffffff;
+        border: 1px solid rgba(138, 151, 172, 0.18);
+        box-shadow: 0 14px 42px rgba(31, 41, 55, 0.08);
+        color: #1f2937;
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .label-chip::before {
+        content: "";
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #00b8d9;
+        box-shadow: 0 0 0 8px rgba(0, 184, 217, 0.12);
+      }
+
+      .scene4-layout {
+        display: grid;
+        grid-template-columns: 620px 1fr;
+        gap: 46px;
+        align-items: stretch;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .analysis-person {
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .data-panel {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: 230px 130px 1fr;
+        align-items: center;
+        gap: 22px;
+        min-height: 72px;
+        padding: 0 18px;
+        border-radius: 22px;
+        background: #f7faff;
+        border: 1px solid rgba(138, 151, 172, 0.13);
+      }
+
+      .metric-name {
+        color: #3d4654;
+        font-size: 25px;
+        font-weight: 800;
+      }
+
+      .metric-value {
+        color: #1f2937;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .metric-value.warn {
+        color: #ea4335;
+      }
+
+      .metric-bar {
+        height: 12px;
+        border-radius: 999px;
+        background: #e8f0fe;
+        overflow: hidden;
+      }
+
+      .metric-bar span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #4285f4, #00b8d9);
+        transform-origin: left center;
+      }
+
+      .metric-bar.warn span {
+        background: linear-gradient(90deg, #f9ab00, #ea4335);
+      }
+
+      .feedback {
+        margin-top: 6px;
+        padding: 28px;
+        border-radius: 28px;
+        background: #fff5f3;
+        border: 1px solid rgba(234, 67, 53, 0.18);
+        box-shadow: 0 18px 52px rgba(234, 67, 53, 0.11);
+      }
+
+      .feedback-label {
+        color: #ea4335;
+        font-size: 24px;
+        font-weight: 900;
+      }
+
+      .feedback-text {
+        margin-top: 10px;
+        color: #1f2937;
+        font-size: 38px;
+        line-height: 1.22;
+        font-weight: 900;
+      }
+
+      .voice-bars {
+        margin-top: 22px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+      }
+
+      .voice-bars span {
+        width: 10px;
+        height: 14px;
+        border-radius: 999px;
+        background: #ea4335;
+        transform-origin: center bottom;
+      }
+
+      .scene5-layout {
+        display: grid;
+        grid-template-columns: 520px 420px 1fr;
+        gap: 36px;
+        align-items: center;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .record-cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .record-card {
+        min-height: 185px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .record-card .label {
+        color: #5b6472;
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .record-card .value {
+        color: #1f2937;
+        font-size: 42px;
+        line-height: 1.08;
+        font-weight: 900;
+      }
+
+      .record-card .hint {
+        color: #5b6472;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .cloud-card {
+        height: 520px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cloud-shape {
+        position: relative;
+        width: 320px;
+        height: 190px;
+        border-radius: 70px;
+        background: #ffffff;
+        border: 2px solid rgba(66, 133, 244, 0.22);
+        box-shadow: 0 22px 70px rgba(66, 133, 244, 0.12);
+      }
+
+      .cloud-shape::before,
+      .cloud-shape::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 2px solid rgba(66, 133, 244, 0.22);
+      }
+
+      .cloud-shape::before {
+        width: 120px;
+        height: 120px;
+        left: 56px;
+        top: -56px;
+      }
+
+      .cloud-shape::after {
+        width: 150px;
+        height: 150px;
+        right: 42px;
+        top: -76px;
+      }
+
+      .cloud-text {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 64px;
+        z-index: 2;
+        text-align: center;
+        color: #2364d8;
+        font-size: 32px;
+        font-weight: 900;
+      }
+
+      .packet-field {
+        height: 520px;
+        position: relative;
+      }
+
+      .packet-line {
+        position: absolute;
+        left: 14px;
+        right: 14px;
+        height: 5px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(66, 133, 244, 0.08), rgba(66, 133, 244, 0.72), rgba(52, 168, 83, 0.42));
+      }
+
+      .packet-line.l1 {
+        top: 122px;
+      }
+
+      .packet-line.l2 {
+        top: 238px;
+      }
+
+      .packet-line.l3 {
+        top: 354px;
+      }
+
+      .packet {
+        position: absolute;
+        left: 0;
+        width: 118px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 18px;
+        color: #ffffff;
+        font-size: 20px;
+        font-weight: 900;
+        box-shadow: 0 16px 42px rgba(31, 41, 55, 0.14);
+      }
+
+      .packet.p1 {
+        top: 96px;
+        background: #4285f4;
+      }
+
+      .packet.p2 {
+        top: 212px;
+        background: #34a853;
+      }
+
+      .packet.p3 {
+        top: 328px;
+        background: #a142f4;
+      }
+
+      .scene6-layout {
+        display: grid;
+        grid-template-columns: 460px 1fr;
+        gap: 38px;
+        align-items: stretch;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .profile {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .avatar {
+        width: 220px;
+        height: 220px;
+        margin: 24px auto;
+        border-radius: 56px;
+        background:
+          linear-gradient(135deg, rgba(66, 133, 244, 0.16), rgba(52, 168, 83, 0.12)),
+          #ffffff;
+        border: 1px solid rgba(66, 133, 244, 0.22);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .avatar svg {
+        width: 138px;
+        height: 138px;
+      }
+
+      .profile-name {
+        text-align: center;
+        color: #1f2937;
+        font-size: 34px;
+        font-weight: 900;
+      }
+
+      .profile-tags {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .profile-tags span {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 14px;
+        border-radius: 19px;
+        background: #e8f0fe;
+        color: #2364d8;
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .learning-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .learn-card {
+        min-height: 188px;
+        padding: 26px;
+      }
+
+      .learn-label {
+        color: #5b6472;
+        font-size: 22px;
+        font-weight: 800;
+      }
+
+      .learn-value {
+        margin-top: 14px;
+        color: #1f2937;
+        font-size: 42px;
+        line-height: 1.12;
+        font-weight: 900;
+      }
+
+      .learn-value.good {
+        color: #188038;
+      }
+
+      .thresholds {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .threshold {
+        min-height: 120px;
+        padding: 22px;
+        border-radius: 24px;
+        background: #f8fbff;
+        border: 1px solid rgba(138, 151, 172, 0.16);
+      }
+
+      .threshold .name {
+        color: #5b6472;
+        font-size: 19px;
+        font-weight: 800;
+      }
+
+      .threshold .change {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-family: "IBM Plex Mono", "Noto Sans JP", monospace;
+        font-size: 36px;
+        font-weight: 900;
+      }
+
+      .old {
+        color: #6b7280;
+      }
+
+      .new {
+        color: #188038;
+      }
+
+      .change-arrow {
+        color: #4285f4;
+      }
+
+      .advice {
+        grid-column: 1 / -1;
+        padding: 28px;
+        border-radius: 28px;
+        background: #fff7e6;
+        border: 1px solid rgba(249, 171, 0, 0.22);
+      }
+
+      .advice .learn-value {
+        font-size: 34px;
+        line-height: 1.25;
+      }
+
+      .scene7-layout {
+        display: grid;
+        grid-template-rows: 260px 300px 1fr;
+        gap: 20px;
+        flex: 1;
+        min-height: 0;
+      }
+
+      .loop-flow {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 18px;
+        align-items: center;
+      }
+
+      .loop-step {
+        position: relative;
+        min-height: 150px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .loop-step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        width: 22px;
+        height: 4px;
+        border-radius: 999px;
+        background: #4285f4;
+      }
+
+      .loop-step:not(:last-child)::before {
+        content: "";
+        position: absolute;
+        right: -24px;
+        top: calc(50% - 8px);
+        width: 16px;
+        height: 16px;
+        border-top: 4px solid #4285f4;
+        border-right: 4px solid #4285f4;
+        transform: rotate(45deg);
+        border-radius: 3px;
+      }
+
+      .loop-title {
+        color: #1f2937;
+        font-size: 36px;
+        line-height: 1.1;
+        font-weight: 900;
+      }
+
+      .model-pipeline {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px;
+        align-items: center;
+      }
+
+      .model-step {
+        position: relative;
+        min-height: 140px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .model-step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: -18px;
+        top: 50%;
+        width: 18px;
+        height: 4px;
+        border-radius: 999px;
+        background: #34a853;
+      }
+
+      .model-name {
+        color: #1f2937;
+        font-size: 30px;
+        line-height: 1.18;
+        font-weight: 900;
+      }
+
+      .final-line {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #1f2937;
+        font-size: 74px;
+        line-height: 1.08;
+        font-weight: 900;
+      }
+
+      #transition-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 40;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      #color-wipe {
+        position: absolute;
+        left: -260px;
+        top: 0;
+        width: 260px;
+        height: 1080px;
+        border-radius: 0 44px 44px 0;
+        opacity: 0;
+        background: linear-gradient(180deg, #4285f4 0%, #34a853 32%, #f9ab00 64%, #a142f4 100%);
+        box-shadow: 22px 0 52px rgba(66, 133, 244, 0.22);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1920"
+      data-height="1080"
+    >
+      <section id="scene1" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon blue" data-layout-ignore></div>
+        <div class="ribbon green" data-layout-ignore></div>
+        <div class="ribbon purple" data-layout-ignore></div>
+        <div class="scene-content scene1-layout">
+          <div class="hero-copy">
+            <div id="s1-kicker" class="kicker">毕业设计答辩展示</div>
+            <h1 id="s1-brand" class="brand">NeuraFit</h1>
+            <div id="s1-subtitle" class="subtitle">自学习视觉运动纠错系统</div>
+            <div id="s1-pills" class="hero-pills">
+              <span class="hero-pill">实时识别</span>
+              <span class="hero-pill">智能纠错</span>
+              <span class="hero-pill">持续进化</span>
+            </div>
+          </div>
+          <div id="s1-modules" class="module-stage">
+            <div class="center-device"><span>手机端</span><span>系统</span></div>
+            <div class="module-card m1 soft-card">
+              <div class="icon-circle blue-bg">01</div>
+              <h3>动作采集</h3>
+              <p>手机摄像头捕捉训练动作</p>
+            </div>
+            <div class="module-card m2 soft-card">
+              <div class="icon-circle green-bg">02</div>
+              <h3>姿态识别</h3>
+              <p>33 个关键点形成骨架</p>
+            </div>
+            <div class="module-card m3 soft-card">
+              <div class="icon-circle orange-bg">03</div>
+              <h3>动作分析</h3>
+              <p>关节角度与姿态规则判断</p>
+            </div>
+            <div class="module-card m4 soft-card">
+              <div class="icon-circle red-bg">04</div>
+              <h3>实时纠错</h3>
+              <p>文字、语音、骨架高亮反馈</p>
+            </div>
+            <div class="module-card m5 soft-card">
+              <div class="icon-circle purple-bg">05</div>
+              <h3>自学习</h3>
+              <p>训练数据持续更新模型</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene2" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon blue" data-layout-ignore></div>
+        <div class="ribbon green" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s2-kicker" class="kicker">场景二｜动作采集</div>
+              <h2 id="s2-title" class="headline">CameraX 实时采集</h2>
+            </div>
+            <div id="s2-status" class="status-pill"><span class="status-dot"></span><span>视频流输入系统</span></div>
+          </div>
+          <div class="scene2-layout">
+            <div id="s2-phone" class="phone">
+              <div class="screen">
+                <div class="notch"></div>
+                <div class="appbar"><span>训练采集</span><span class="app-dot"></span></div>
+                <div class="phone-panel camera">
+                  <svg viewBox="0 0 300 360" class="skeleton-svg" aria-hidden="true">
+                    <path class="figure-body" d="M150 64 L150 128 L104 178 L88 250 M150 128 L198 178 L214 250 M150 128 L134 220 L96 284 L78 330 M134 220 L194 284 L218 330" />
+                    <circle class="joint" cx="150" cy="64" r="12" />
+                    <circle class="joint" cx="150" cy="128" r="10" />
+                    <circle class="joint" cx="104" cy="178" r="9" />
+                    <circle class="joint" cx="198" cy="178" r="9" />
+                    <circle class="joint" cx="88" cy="250" r="8" />
+                    <circle class="joint" cx="214" cy="250" r="8" />
+                    <circle class="joint" cx="134" cy="220" r="10" />
+                    <circle class="joint" cx="96" cy="284" r="9" />
+                    <circle class="joint" cx="194" cy="284" r="9" />
+                    <circle class="joint" cx="78" cy="330" r="8" />
+                    <circle class="joint" cx="218" cy="330" r="8" />
+                  </svg>
+                </div>
+                <div class="phone-panel info">
+                  <div class="mini-label">采集帧率</div>
+                  <div class="mini-value">30 帧/秒</div>
+                </div>
+                <div class="phone-panel score">
+                  <div class="mini-label">画面稳定度</div>
+                  <div class="progress"><span></span></div>
+                </div>
+              </div>
+            </div>
+            <div id="s2-stream" class="stream-zone">
+              <div class="stream-chip">实时画面</div>
+              <div class="arrow stream-arrow"></div>
+              <div class="stream-chip">动作帧</div>
+            </div>
+            <div id="s2-person" class="person-panel card">
+              <svg viewBox="0 0 640 720" class="skeleton-svg" aria-hidden="true">
+                <path class="figure-body" d="M320 82 L320 155 L246 210 L214 316 L194 420 M320 155 L398 210 L428 316 L448 420 M320 155 L300 300 L286 375 M252 384 L196 520 L160 660 L125 690 L184 694 M388 384 L444 520 L480 660 L516 690 L454 694 M252 384 L388 384" />
+                <circle class="joint" cx="320" cy="82" r="18" />
+                <circle class="joint" cx="320" cy="155" r="14" />
+                <circle class="joint" cx="246" cy="210" r="13" />
+                <circle class="joint" cx="398" cy="210" r="13" />
+                <circle class="joint" cx="214" cy="316" r="12" />
+                <circle class="joint" cx="428" cy="316" r="12" />
+                <circle class="joint" cx="194" cy="420" r="11" />
+                <circle class="joint" cx="448" cy="420" r="11" />
+                <circle class="joint" cx="252" cy="384" r="14" />
+                <circle class="joint" cx="388" cy="384" r="14" />
+                <circle class="joint" cx="196" cy="520" r="13" />
+                <circle class="joint" cx="444" cy="520" r="13" />
+                <circle class="joint" cx="160" cy="660" r="12" />
+                <circle class="joint" cx="480" cy="660" r="12" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene3" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon purple" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s3-kicker" class="kicker">场景三｜姿态识别</div>
+              <h2 id="s3-title" class="headline">MediaPipe Pose 姿态识别</h2>
+            </div>
+            <div id="s3-status" class="status-pill"><span class="status-dot"></span><span>33 个关键点</span></div>
+          </div>
+          <div class="scene3-layout">
+            <div id="s3-pose" class="pose-card card">
+              <svg viewBox="0 0 580 720" class="skeleton-svg" aria-hidden="true">
+                <path class="bone-muted" d="M290 72 L290 138 L218 188 L188 288 L166 392 M290 138 L362 188 L392 288 L414 392 M290 138 L290 246 L290 350 M232 372 L188 520 L152 650 L120 684 L184 688 M348 372 L392 520 L428 650 L462 684 L396 688 M232 372 L348 372 M218 188 L362 188" />
+                <path id="s3-bones" class="bone" d="M290 72 L290 138 L218 188 L188 288 L166 392 M290 138 L362 188 L392 288 L414 392 M290 138 L290 246 L290 350 M232 372 L188 520 L152 650 L120 684 L184 688 M348 372 L392 520 L428 650 L462 684 L396 688 M232 372 L348 372 M218 188 L362 188" />
+                <g id="s3-points">
+                  <circle class="kp" cx="290" cy="72" r="10" />
+                  <circle class="kp-small" cx="274" cy="62" r="7" />
+                  <circle class="kp-small" cx="306" cy="62" r="7" />
+                  <circle class="kp-small" cx="260" cy="72" r="7" />
+                  <circle class="kp-small" cx="320" cy="72" r="7" />
+                  <circle class="kp-small" cx="250" cy="88" r="7" />
+                  <circle class="kp-small" cx="330" cy="88" r="7" />
+                  <circle class="kp" cx="218" cy="188" r="10" />
+                  <circle class="kp" cx="362" cy="188" r="10" />
+                  <circle class="kp" cx="188" cy="288" r="9" />
+                  <circle class="kp" cx="392" cy="288" r="9" />
+                  <circle class="kp" cx="166" cy="392" r="9" />
+                  <circle class="kp" cx="414" cy="392" r="9" />
+                  <circle class="kp-small" cx="148" cy="404" r="7" />
+                  <circle class="kp-small" cx="432" cy="404" r="7" />
+                  <circle class="kp-small" cx="140" cy="386" r="7" />
+                  <circle class="kp-small" cx="440" cy="386" r="7" />
+                  <circle class="kp" cx="232" cy="372" r="10" />
+                  <circle class="kp" cx="348" cy="372" r="10" />
+                  <circle class="kp" cx="188" cy="520" r="10" />
+                  <circle class="kp" cx="392" cy="520" r="10" />
+                  <circle class="kp" cx="152" cy="650" r="9" />
+                  <circle class="kp" cx="428" cy="650" r="9" />
+                  <circle class="kp-small" cx="120" cy="684" r="7" />
+                  <circle class="kp-small" cx="462" cy="684" r="7" />
+                  <circle class="kp-small" cx="184" cy="688" r="7" />
+                  <circle class="kp-small" cx="396" cy="688" r="7" />
+                  <circle class="kp-small" cx="290" cy="138" r="8" />
+                  <circle class="kp-small" cx="290" cy="246" r="8" />
+                  <circle class="kp-small" cx="290" cy="350" r="8" />
+                  <circle class="kp-small" cx="218" cy="176" r="7" />
+                  <circle class="kp-small" cx="362" cy="176" r="7" />
+                  <circle class="kp-small" cx="290" cy="108" r="7" />
+                </g>
+              </svg>
+            </div>
+            <div id="s3-labels" class="labels-grid">
+              <div class="label-chip">肩</div>
+              <div class="label-chip">肘</div>
+              <div class="label-chip">髋</div>
+              <div class="label-chip">膝</div>
+              <div class="label-chip">踝</div>
+              <div class="label-chip">脚尖</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene4" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon blue" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s4-kicker" class="kicker">场景四｜动作分析</div>
+              <h2 id="s4-title" class="headline">关节角度分析与实时纠错</h2>
+            </div>
+            <div id="s4-status" class="status-pill"><span class="status-dot"></span><span>规则库 + 自训练模型</span></div>
+          </div>
+          <div class="scene4-layout">
+            <div id="s4-person" class="analysis-person card">
+              <svg viewBox="0 0 560 720" class="skeleton-svg" aria-hidden="true">
+                <path class="bone-muted" d="M280 72 L274 142 L208 196 L182 292 L164 390 M274 142 L352 196 L382 292 L402 390 M274 142 L260 250 L246 360 M226 376 L184 522 L150 650 L118 684 L178 688 M340 376 L388 522 L424 650 L462 684 L398 688 M226 376 L340 376 M208 196 L352 196" />
+                <path class="bone" d="M280 72 L274 142 L208 196 L182 292 L164 390 M274 142 L352 196 L382 292 L402 390 M226 376 L184 522 L150 650 L118 684 L178 688 M340 376 L388 522 L424 650 L462 684 L398 688 M226 376 L340 376 M208 196 L352 196" />
+                <path id="s4-error-line" class="error-line" d="M274 142 L260 250 L246 360" />
+                <circle class="joint" cx="280" cy="72" r="10" />
+                <circle class="error-point" cx="274" cy="142" r="12" />
+                <circle class="joint" cx="208" cy="196" r="10" />
+                <circle class="joint" cx="352" cy="196" r="10" />
+                <circle class="joint" cx="182" cy="292" r="9" />
+                <circle class="joint" cx="382" cy="292" r="9" />
+                <circle class="joint" cx="164" cy="390" r="9" />
+                <circle class="joint" cx="402" cy="390" r="9" />
+                <circle class="error-point" cx="260" cy="250" r="10" />
+                <circle class="error-point" cx="246" cy="360" r="12" />
+                <circle class="joint" cx="226" cy="376" r="10" />
+                <circle class="joint" cx="340" cy="376" r="10" />
+                <circle class="joint" cx="184" cy="522" r="10" />
+                <circle class="joint" cx="388" cy="522" r="10" />
+                <circle class="joint" cx="150" cy="650" r="9" />
+                <circle class="joint" cx="424" cy="650" r="9" />
+              </svg>
+            </div>
+            <div id="s4-panel" class="data-panel card">
+              <div class="metric-row">
+                <div class="metric-name">左膝角度</div>
+                <div class="metric-value">106°</div>
+                <div class="metric-bar"><span style="width: 66%"></span></div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-name">右膝角度</div>
+                <div class="metric-value">108°</div>
+                <div class="metric-bar"><span style="width: 68%"></span></div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-name">背部倾斜角</div>
+                <div class="metric-value warn">32°</div>
+                <div class="metric-bar warn"><span style="width: 82%"></span></div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-name">身体直线程度</div>
+                <div class="metric-value">171°</div>
+                <div class="metric-bar"><span style="width: 88%"></span></div>
+              </div>
+              <div id="s4-feedback" class="feedback">
+                <div class="feedback-label">实时反馈</div>
+                <div class="feedback-text">背部前倾过大，请收紧核心</div>
+                <div class="voice-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene5" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon green" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s5-kicker" class="kicker">场景五｜训练记录</div>
+              <h2 id="s5-title" class="headline">训练数据自动记录</h2>
+            </div>
+            <div id="s5-status" class="status-pill"><span class="status-dot"></span><span>样本持续沉淀</span></div>
+          </div>
+          <div class="scene5-layout">
+            <div id="s5-cards" class="record-cards">
+              <div class="record-card soft-card">
+                <div class="icon-circle blue-bg">次</div>
+                <div class="label">训练次数</div>
+                <div class="value">128 次</div>
+                <div class="hint">自动按训练周期汇总</div>
+              </div>
+              <div class="record-card soft-card">
+                <div class="icon-circle green-bg">分</div>
+                <div class="label">动作评分</div>
+                <div class="value">78 分</div>
+                <div class="hint">姿态质量量化展示</div>
+              </div>
+              <div class="record-card soft-card">
+                <div class="icon-circle orange-bg">错</div>
+                <div class="label">错误类型</div>
+                <div class="value">背部前倾</div>
+                <div class="hint">高频错误自动归类</div>
+              </div>
+              <div class="record-card soft-card">
+                <div class="icon-circle purple-bg">样</div>
+                <div class="label">动作样本</div>
+                <div class="value">3,420 帧</div>
+                <div class="hint">用于后续模型训练</div>
+              </div>
+            </div>
+            <div id="s5-packets" class="packet-field">
+              <div class="packet-line l1"></div>
+              <div class="packet-line l2"></div>
+              <div class="packet-line l3"></div>
+              <div class="packet p1">角度</div>
+              <div class="packet p2">评分</div>
+              <div class="packet p3">样本</div>
+            </div>
+            <div id="s5-cloud" class="cloud-card card">
+              <div class="cloud-shape"><div class="cloud-text">训练数据仓</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene6" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon purple" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s6-kicker" class="kicker">场景六｜个性化学习</div>
+              <h2 id="s6-title" class="headline">个性化学习与训练建议</h2>
+            </div>
+            <div id="s6-status" class="status-pill"><span class="status-dot"></span><span>阈值动态调整</span></div>
+          </div>
+          <div class="scene6-layout">
+            <div id="s6-profile" class="profile card">
+              <div>
+                <div class="kicker">用户画像</div>
+                <div class="avatar">
+                  <svg viewBox="0 0 160 160" aria-hidden="true">
+                    <circle cx="80" cy="48" r="30" fill="#4285F4" opacity="0.88" />
+                    <path d="M36 134 C44 96 116 96 124 134" fill="#34A853" opacity="0.78" />
+                    <path d="M42 116 C60 130 100 130 118 116" fill="none" stroke="#F9AB00" stroke-width="8" stroke-linecap="round" />
+                  </svg>
+                </div>
+                <div class="profile-name">深蹲训练者</div>
+                <div class="profile-tags"><span>核心不足</span><span>膝部稳定</span><span>进步明显</span></div>
+              </div>
+            </div>
+            <div id="s6-learning" class="learning-grid">
+              <div class="learn-card soft-card">
+                <div class="learn-label">平均分</div>
+                <div class="learn-value">78</div>
+              </div>
+              <div class="learn-card soft-card">
+                <div class="learn-label">主要错误</div>
+                <div class="learn-value">背部前倾</div>
+              </div>
+              <div class="learn-card soft-card">
+                <div class="learn-label">趋势</div>
+                <div class="learn-value good">进步明显</div>
+              </div>
+              <div class="learn-card soft-card">
+                <div class="learn-label">阈值变化</div>
+                <div class="thresholds">
+                  <div class="threshold">
+                    <div class="name">膝关节阈值</div>
+                    <div class="change"><span class="old">110°</span><span class="change-arrow">→</span><span class="new">105°</span></div>
+                  </div>
+                  <div class="threshold">
+                    <div class="name">背部倾斜阈值</div>
+                    <div class="change"><span class="old">35°</span><span class="change-arrow">→</span><span class="new">32°</span></div>
+                  </div>
+                </div>
+              </div>
+              <div id="s6-advice" class="advice">
+                <div class="learn-label">训练建议</div>
+                <div class="learn-value">建议进行核心收紧训练和靠墙深蹲练习</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="scene7" class="scene">
+        <div class="decor-grid" data-layout-ignore></div>
+        <div class="ribbon blue" data-layout-ignore></div>
+        <div class="ribbon green" data-layout-ignore></div>
+        <div class="ribbon purple" data-layout-ignore></div>
+        <div class="scene-content">
+          <div class="topbar">
+            <div>
+              <div id="s7-kicker" class="kicker">场景七｜模型进化</div>
+              <h2 id="s7-title" class="headline">识别—纠错—记录—学习—进化</h2>
+            </div>
+          </div>
+          <div class="scene7-layout">
+            <div id="s7-loop" class="loop-flow">
+              <div class="loop-step soft-card"><div class="icon-circle blue-bg">识</div><div class="loop-title">识别</div></div>
+              <div class="loop-step soft-card"><div class="icon-circle red-bg">纠</div><div class="loop-title">纠错</div></div>
+              <div class="loop-step soft-card"><div class="icon-circle orange-bg">记</div><div class="loop-title">记录</div></div>
+              <div class="loop-step soft-card"><div class="icon-circle green-bg">学</div><div class="loop-title">学习</div></div>
+              <div class="loop-step soft-card"><div class="icon-circle purple-bg">进</div><div class="loop-title">进化</div></div>
+            </div>
+            <div id="s7-model" class="model-pipeline">
+              <div class="model-step card"><div class="icon-circle blue-bg">01</div><div class="model-name">训练样本</div></div>
+              <div class="model-step card"><div class="icon-circle green-bg">02</div><div class="model-name">模型训练</div></div>
+              <div class="model-step card"><div class="icon-circle orange-bg">03</div><div class="model-name">TFLite 模型</div></div>
+              <div class="model-step card"><div class="icon-circle purple-bg">04</div><div class="model-name">App 更新</div></div>
+            </div>
+            <div id="s7-final" class="final-line">NeuraFit 越用越懂你</div>
+          </div>
+        </div>
+      </section>
+
+      <div id="transition-layer" data-layout-ignore>
+        <div id="color-wipe"></div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      function transitionScene(fromScene, toScene, at, dir) {
+        const startX = dir > 0 ? 120 : -120;
+        const outX = dir > 0 ? -72 : 72;
+        tl.set(toScene, { opacity: 1, zIndex: 8, x: startX, filter: "blur(8px)" }, at);
+        tl.set(fromScene, { zIndex: 4 }, at);
+        tl.fromTo("#color-wipe", { x: -260, opacity: 0 }, { x: 2180, opacity: 0.86, duration: 0.48, ease: "power3.inOut" }, at);
+        tl.to(fromScene, { x: outX, scale: 0.985, filter: "blur(6px)", duration: 0.48, ease: "power3.inOut" }, at);
+        tl.to(toScene, { x: 0, filter: "blur(0px)", duration: 0.48, ease: "power3.inOut" }, at + 0.02);
+        tl.set(fromScene, { opacity: 0, x: 0, scale: 1, filter: "none", zIndex: 1 }, at + 0.5);
+        tl.set(toScene, { zIndex: 2, filter: "none" }, at + 0.5);
+        tl.set("#color-wipe", { opacity: 0 }, at + 0.52);
+      }
+
+      function draw(selector, at, duration) {
+        tl.from(selector, { strokeDasharray: 1400, strokeDashoffset: 1400, duration, ease: "power2.out" }, at);
+      }
+
+      tl.to(".ribbon.blue", { x: -46, duration: 3.2, repeat: 9, yoyo: true, ease: "sine.inOut" }, 0);
+      tl.to(".ribbon.green", { x: 38, duration: 3.5, repeat: 8, yoyo: true, ease: "sine.inOut" }, 0.15);
+      tl.to(".ribbon.purple", { x: -30, duration: 3.8, repeat: 7, yoyo: true, ease: "sine.inOut" }, 0.25);
+
+      tl.from("#s1-kicker", { y: 24, opacity: 0, duration: 0.45, ease: "power3.out" }, 0.18);
+      tl.from("#s1-brand", { y: 54, opacity: 0, scale: 0.96, duration: 0.72, ease: "expo.out" }, 0.34);
+      tl.from("#s1-subtitle", { y: 28, opacity: 0, duration: 0.5, ease: "power2.out" }, 0.66);
+      tl.from("#s1-pills .hero-pill", { y: 24, opacity: 0, scale: 0.94, stagger: 0.09, duration: 0.36, ease: "back.out(1.7)" }, 0.88);
+      tl.from("#s1-modules .center-device", { scale: 0.72, opacity: 0, rotation: -5, duration: 0.58, ease: "back.out(1.6)" }, 0.44);
+      tl.from("#s1-modules .module-card", { y: 36, opacity: 0, scale: 0.92, stagger: { amount: 0.62, from: "center" }, duration: 0.42, ease: "power3.out" }, 0.72);
+
+      transitionScene("#scene1", "#scene2", 2.82, 1);
+      tl.from("#s2-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 3.08);
+      tl.from("#s2-title", { x: -42, opacity: 0, duration: 0.46, ease: "expo.out" }, 3.18);
+      tl.from("#s2-status", { scale: 0.84, opacity: 0, duration: 0.36, ease: "back.out(1.8)" }, 3.26);
+      tl.from("#s2-phone", { x: -70, opacity: 0, rotation: -3, duration: 0.52, ease: "power4.out" }, 3.28);
+      tl.from("#s2-stream .stream-chip", { y: 24, opacity: 0, stagger: 0.12, duration: 0.34, ease: "power2.out" }, 3.56);
+      tl.from("#s2-stream .arrow", { scaleX: 0, opacity: 0, transformOrigin: "left center", duration: 0.42, ease: "power3.out" }, 3.7);
+      tl.from("#s2-person", { x: 70, opacity: 0, scale: 0.96, duration: 0.52, ease: "circ.out" }, 3.44);
+      tl.to("#s2-phone .progress span", { scaleX: 0.42, duration: 0.7, repeat: 2, yoyo: true, ease: "sine.inOut" }, 4.2);
+
+      transitionScene("#scene2", "#scene3", 5.82, -1);
+      tl.from("#s3-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 6.08);
+      tl.from("#s3-title", { x: -44, opacity: 0, duration: 0.48, ease: "expo.out" }, 6.2);
+      tl.from("#s3-status", { scale: 0.84, opacity: 0, duration: 0.36, ease: "back.out(1.8)" }, 6.32);
+      tl.from("#s3-pose", { y: 44, opacity: 0, scale: 0.96, duration: 0.52, ease: "circ.out" }, 6.28);
+      draw("#s3-bones", 6.72, 0.72);
+      tl.from("#s3-points circle", { scale: 0, opacity: 0, transformOrigin: "center center", stagger: { amount: 1.08, from: "center" }, duration: 0.28, ease: "back.out(2)" }, 6.86);
+      tl.from("#s3-labels .label-chip", { y: 28, opacity: 0, scale: 0.94, stagger: 0.1, duration: 0.36, ease: "power3.out" }, 7.42);
+
+      transitionScene("#scene3", "#scene4", 9.82, 1);
+      tl.from("#s4-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 10.08);
+      tl.from("#s4-title", { x: -44, opacity: 0, duration: 0.48, ease: "expo.out" }, 10.18);
+      tl.from("#s4-status", { scale: 0.84, opacity: 0, duration: 0.36, ease: "back.out(1.8)" }, 10.28);
+      tl.from("#s4-person", { x: -54, opacity: 0, scale: 0.96, duration: 0.5, ease: "circ.out" }, 10.34);
+      tl.from("#s4-panel", { x: 60, opacity: 0, duration: 0.5, ease: "power4.out" }, 10.42);
+      tl.from("#s4-panel .metric-row", { y: 28, opacity: 0, stagger: 0.13, duration: 0.35, ease: "power3.out" }, 10.72);
+      tl.from("#s4-panel .metric-bar span", { scaleX: 0, duration: 0.54, stagger: 0.1, ease: "power2.out" }, 10.95);
+      tl.from("#s4-error-line", { strokeDasharray: 520, strokeDashoffset: 520, duration: 0.5, ease: "power2.out" }, 11.38);
+      tl.from("#s4-feedback", { y: 34, opacity: 0, scale: 0.96, duration: 0.42, ease: "back.out(1.5)" }, 11.58);
+      tl.from("#s4-feedback .voice-bars span", { scaleY: 0.2, opacity: 0.35, stagger: 0.05, duration: 0.24, ease: "power2.out" }, 11.92);
+      tl.to("#s4-feedback .voice-bars span", { scaleY: 2.15, duration: 0.24, repeat: 5, yoyo: true, stagger: 0.05, ease: "sine.inOut" }, 12.2);
+
+      transitionScene("#scene4", "#scene5", 13.82, -1);
+      tl.from("#s5-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 14.08);
+      tl.from("#s5-title", { x: -44, opacity: 0, duration: 0.44, ease: "expo.out" }, 14.18);
+      tl.from("#s5-status", { scale: 0.84, opacity: 0, duration: 0.36, ease: "back.out(1.8)" }, 14.28);
+      tl.from("#s5-cards .record-card", { y: 34, opacity: 0, scale: 0.95, stagger: 0.09, duration: 0.38, ease: "back.out(1.5)" }, 14.32);
+      tl.from("#s5-cloud", { x: 58, opacity: 0, scale: 0.94, duration: 0.48, ease: "circ.out" }, 14.56);
+      tl.from("#s5-packets .packet-line", { scaleX: 0, opacity: 0, transformOrigin: "left center", stagger: 0.08, duration: 0.32, ease: "power2.out" }, 14.82);
+      tl.fromTo("#s5-packets .packet", { x: 0, opacity: 0 }, { x: 260, opacity: 1, stagger: 0.14, duration: 0.76, ease: "power3.inOut" }, 15.08);
+      tl.to("#s5-packets .packet", { x: 320, opacity: 0, stagger: 0.14, duration: 0.3, ease: "power2.in" }, 16.05);
+
+      transitionScene("#scene5", "#scene6", 17.82, 1);
+      tl.from("#s6-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 18.08);
+      tl.from("#s6-title", { x: -44, opacity: 0, duration: 0.44, ease: "expo.out" }, 18.18);
+      tl.from("#s6-status", { scale: 0.84, opacity: 0, duration: 0.36, ease: "back.out(1.8)" }, 18.28);
+      tl.from("#s6-profile", { x: -54, opacity: 0, scale: 0.96, duration: 0.5, ease: "circ.out" }, 18.32);
+      tl.from("#s6-profile .avatar", { scale: 0.72, opacity: 0, duration: 0.46, ease: "back.out(1.8)" }, 18.7);
+      tl.from("#s6-profile .profile-tags span", { y: 18, opacity: 0, stagger: 0.08, duration: 0.28, ease: "power2.out" }, 19.04);
+      tl.from("#s6-learning .learn-card", { y: 32, opacity: 0, scale: 0.96, stagger: 0.09, duration: 0.36, ease: "back.out(1.4)" }, 18.48);
+      tl.from("#s6-learning .threshold", { y: 20, opacity: 0, stagger: 0.1, duration: 0.32, ease: "power3.out" }, 19.28);
+      tl.from(".threshold .new", { y: -16, opacity: 0, scale: 1.08, stagger: 0.08, duration: 0.34, ease: "power3.out" }, 19.68);
+      tl.from("#s6-advice", { y: 34, opacity: 0, scale: 0.96, duration: 0.42, ease: "circ.out" }, 20.15);
+
+      transitionScene("#scene6", "#scene7", 21.82, -1);
+      tl.from("#s7-kicker", { y: 22, opacity: 0, duration: 0.34, ease: "power3.out" }, 22.08);
+      tl.from("#s7-title", { x: -44, opacity: 0, duration: 0.48, ease: "expo.out" }, 22.18);
+      tl.from("#s7-loop .loop-step", { y: 34, opacity: 0, scale: 0.94, stagger: 0.12, duration: 0.42, ease: "back.out(1.5)" }, 22.62);
+      tl.from("#s7-model .model-step", { y: 38, opacity: 0, scale: 0.95, stagger: 0.12, duration: 0.4, ease: "power3.out" }, 24.92);
+      tl.from("#s7-final", { y: 42, opacity: 0, scale: 0.96, duration: 0.62, ease: "expo.out" }, 27.25);
+      tl.to("#s7-final", { scale: 1.035, duration: 0.72, repeat: 2, yoyo: true, ease: "sine.inOut" }, 28.1);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

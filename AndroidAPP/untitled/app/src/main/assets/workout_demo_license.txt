@@ -1,0 +1,15 @@
+Workout demo video asset
+
+Source:
+https://github.com/rohanx01/Squat-Analysis-Model/blob/main/squat.mp4
+
+Repository:
+https://github.com/rohanx01/Squat-Analysis-Model
+
+License:
+MIT License
+
+Copyright (c) 2021 Rohan Chavan
+
+The video is used as a local development/test asset for squat detection,
+counting, and correction-rule validation.

@@ -1,0 +1,6 @@
+# Copy this file to gradle.properties for local Android builds.
+AUTH_BASE_URL=http://10.0.2.2:8788/api
+SIGNALING_URL=ws://10.0.2.2:8787/motion-signaling
+RTC_FORCE_RELAY=false
+RTC_ICE_SERVERS=[{"urls":"stun:stun.l.google.com:19302"}]
+USE_DEMO_WORKOUT_VIDEO=false
